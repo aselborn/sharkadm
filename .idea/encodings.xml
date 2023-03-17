@@ -4,7 +4,7 @@
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/calc/BenticQualityIndex.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/fileimport/SingleFileImport.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/formats/FormatFileBacterioplankton.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/formats/FormatFileBacterioplankton.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/formats/FormatFileBeda.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/formats/FormatFileChlorophyll.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/datasets/formats/FormatFileRingedseal.java" charset="UTF-8" />
@@ -17,7 +17,7 @@
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/fileimport/misc/FileImportSettings.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/fileimport/misc/FileImportTranslate.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/location/ShapeFileReader.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/location/ShapeFileReader_TEST.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/location/ShapeFileReader_TEST.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/location/VisitLocationManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/species_old/ExportSpeciesList.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/se/smhi/sharkadm/species_old/TaxonManager.java" charset="UTF-8" />

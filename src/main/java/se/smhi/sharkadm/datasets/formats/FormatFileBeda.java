@@ -71,7 +71,7 @@ public class FormatFileBeda extends FormatFileBase {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "dataHugg.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "dataHugg.txt");
 
-				bufferedReader = verifyDataFile(filePath.toFile());
+				bufferedReader = verifyDataFile(filePath.toFile(), "Mprog");
 
 				if (bufferedReader == null)
 					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));

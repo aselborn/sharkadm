@@ -79,7 +79,7 @@ public class FormatFileBacterioplankton extends FormatFileBase {
 			}
 
 			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
-			bufferedReader = verifyDataFile(filePath.toFile());
+			bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
 
 			if (bufferedReader == null)
 				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
@@ -292,10 +292,10 @@ public class FormatFileBacterioplankton extends FormatFileBase {
 			variable.appendToField("variable.variable_comment", "Bad chemical data from Ship 40, Sweden.");
 		}
 
-//		- Bactgr. och Bactabu. och Bactpl. Koder: Inom [] står hur datavärden lagrar informationen
+//		- Bactgr. och Bactabu. och Bactpl. Koder: Inom [] stï¿½r hur datavï¿½rden lagrar informationen
 //		0 No data
 //		1 Data checked and OK [QFLAG=A]
-//		2 Unchecked data [Lämnas blank]
+//		2 Unchecked data [Lï¿½mnas blank]
 //		3 Questionable data[QFLAG=S]
 //		5 Traces (contamination) in data [QFLAG=S + COMNT_VAR=Traces (contamination) in data.]
 //		6 Value greater than upper detection limit [QFLAG: >]

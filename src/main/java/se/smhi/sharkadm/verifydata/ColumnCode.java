@@ -3,14 +3,14 @@ package se.smhi.sharkadm.verifydata;
 /*
  * This class represents the row and the tag for the missing MPROG.
  */
-public class Mprog {
+public class ColumnCode {
   
-    private String mProg;
-    public String getmProg() {
-        return mProg;
+    private String colCode;
+    public String getColCode() {
+        return colCode;
     }
-    public void setmProg(String mProg) {
-        this.mProg = mProg;
+    public void setColCode(String colCode) {
+        this.colCode = colCode;
     }
 
 

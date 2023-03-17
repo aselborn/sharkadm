@@ -105,7 +105,7 @@ public class FormatFileEpibenthosDropvideo extends FormatFileBase {
 			}
 
 			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
-			bufferedReader = verifyDataFile(filePath.toFile());
+			bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
 
 			if (bufferedReader == null)
 				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));

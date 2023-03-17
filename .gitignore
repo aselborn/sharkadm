@@ -26,3 +26,5 @@ replay_pid*
 # textfiles
 shark_adm_log.txt
 mprog-log*
+
+/target
