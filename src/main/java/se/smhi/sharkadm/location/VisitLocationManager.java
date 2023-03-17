@@ -103,27 +103,27 @@ public class VisitLocationManager {
 			visitLocations.add(visitLocation);
 		}
 		
-		// - Län
+		// - LÃ¤n
 		// - Kommuner
 		shapefileName = "KOMMUNER_LAN.shp";		
 		new ShapeFileReader().addPropertyValuesToVisitLocations(shapefilePath, shapefileName, visitLocations);		
 				
 		// - Vattendistrikt enligt Svenskt VattenARkiv (SVAR) 
-		// - Områdestyp(er) enligt Svenskt Vattenarkiv (SVAR) 
+		// - OmrÃ¥destyp(er) enligt Svenskt Vattenarkiv (SVAR) 
 		shapefileName = "havsomr_y_2012_2.shp";		
 		new ShapeFileReader().addPropertyValuesToVisitLocations(shapefilePath, shapefileName, visitLocations);		
 				
-		// - Typområde(n) enligt Havsdirektivet 
-		// - Vattenförekomst(er) enligt Svenskt VattenARkiv (SVAR) 
+		// - TypomrÃ¥de(n) enligt Havsdirektivet 
+		// - VattenfÃ¶rekomst(er) enligt Svenskt VattenARkiv (SVAR) 
 		shapefileName = "havdirtyper_2012_delatKattegatt.shp";		
 		new ShapeFileReader().addPropertyValuesToVisitLocations(shapefilePath, shapefileName, visitLocations);		
 				
-		// - HELCOM/OSPAR-områden
+		// - HELCOM/OSPAR-omrÃ¥den
 		shapefileName = "KONVENTION.shp";		
 		new ShapeFileReader().addPropertyValuesToVisitLocations(shapefilePath, shapefileName, visitLocations);		
 		
 		// - Svensk ekonomisk zon (EEZ)
-		// - Havsbassänger enligt Havsmiljödirektivet (MSFD)
+		// - HavsbassÃ¤nger enligt HavsmiljÃ¶direktivet (MSFD)
 		shapefileName = "MSFD_areas.shp";		
 //		shapefileName = "MSFD_areas_TM.shp";		
 		new ShapeFileReader().addPropertyValuesToVisitLocations(shapefilePath, shapefileName, visitLocations);		

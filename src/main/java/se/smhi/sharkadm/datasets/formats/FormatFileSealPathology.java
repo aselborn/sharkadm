@@ -72,19 +72,23 @@ public class FormatFileSealPathology extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "data.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.dat"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.dat");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			}
-			// Import.
+
+			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
+			bufferedReader = verifyDataFile(filePath.toFile());
+
+			if (bufferedReader == null)
+				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+			// Import of file DATA.txt.
 			if (bufferedReader != null) {
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				importData(fileContent);
-			} 
+			}
 		} catch (Exception e) {
 			importInfo.addConcatError("FAILED TO IMPORT FILE.");
 		}

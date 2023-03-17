@@ -96,20 +96,39 @@ public class FormatFilePhysicalChemical extends FormatFileBase {
 					importInfo.addConcatWarning("File missing or empty: analyse_info.txt.");
 				}
 			}
+//			if (Files.exists(Paths.get(zipFileName, "processed_data", "data.txt"))) {
+//				filePath = Paths.get(zipFileName, "processed_data", "data.txt");
+//				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+//				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
+//				if (fileContent != null) {
+//					importAllData(fileContent);
+//				} else {
+//					importInfo.addConcatWarning("File missing or empty: data.txt.");
+//				}
+//			}
+
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "data.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.txt");
+			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.dat"))) {
+				filePath = Paths.get(zipFileName, "processed_data", "data.dat");
+			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.skv"))) {
+				filePath = Paths.get(zipFileName, "processed_data", "data.skv");
+			}
+
+			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
+			bufferedReader = verifyDataFile(filePath.toFile());
+
+			if (bufferedReader == null)
 				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+			// Import of file DATA.txt.
+			if (bufferedReader != null) {
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
-				if (fileContent != null) {
-					importAllData(fileContent);
-				} else {
-					importInfo.addConcatWarning("File missing or empty: data.txt.");
-				}
+				importAllData(fileContent);
 			}
 		} catch (Exception e) {
 			importInfo.addConcatError("FAILED TO IMPORT FILE.");
 		}
-	
 		// Used by the Observer pattern.
 		ModelFacade.instance().modelChanged();
 	}

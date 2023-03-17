@@ -70,7 +70,12 @@ public class FormatFileBeda extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "dataHugg.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "dataHugg.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile());
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importHugg(fileContent);

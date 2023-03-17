@@ -73,9 +73,9 @@ public class SelectFormat {
 				fileImport = new FormatFileGrunda(logInfo, importInfo);
 			}
 			// EpibenthosMartrans.
-			else if (importFormat.equals("epibenthosmartrans")) {
+			/*else if (importFormat.equals("epibenthosmartrans")) {
 				fileImport = new FormatXmlMartrans(logInfo, importInfo);
-			}
+			}*/
 			// EpibenthosDropvideo.
 			else if (importFormat.equals("epibenthosdropvideo")) {
 				fileImport = new FormatFileEpibenthosDropvideo(logInfo, importInfo);

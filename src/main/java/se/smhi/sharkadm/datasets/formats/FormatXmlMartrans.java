@@ -2,7 +2,8 @@
  * SHARKadm - Administration of marine environmental monitoring data.
  * Contact: shark@smhi.se 
  * Copyright (c) 2006-2017 SMHI, Swedish Meteorological and Hydrological Institute. 
- */
+ *//*
+
 
 package se.smhi.sharkadm.datasets.formats;
 
@@ -34,6 +35,7 @@ import se.smhi.sharkadm.model.Variable;
 import se.smhi.sharkadm.model.Visit;
 import se.smhi.sharkadm.utils.ErrorLogger;
 
+*/
 /**
  * Import format for Martrans. Rules: - Columns used in the import-matrix:
  * MARTRANS. - Import files are in XML format. - The XML elements should be
@@ -60,7 +62,8 @@ import se.smhi.sharkadm.utils.ErrorLogger;
  * <foto>0</foto> <belagg>0</belagg> </avsnittart> - <avsnittsubstrat>
  * <substratkod>3</substratkod> <substrat_substrat>Sten</substrat_substrat>
  * <tackningsgrad>50</tackningsgrad> </avsnittsubstrat> </avsnitt>
- */
+ *//*
+
 public class FormatXmlMartrans extends FormatXmlBase {
 
 	Boolean isTransektTaxaMinMaxCreated = false;
@@ -690,7 +693,7 @@ public class FormatXmlMartrans extends FormatXmlBase {
 			// variable.getField("TEMP.substrate_comment"));
 			// }
 
-			if (variable.getField("TEMP.substrate").equals("Häll")) {
+			if (variable.getField("TEMP.substrate").equals("HÃ¤ll")) {
 				variable.getParent().addField("sample.sample_substrate_cover_rock",
 						variable.getField("TEMP.substrate_cover"));
 				variable.getParent().addField("sample.sample_substrate_comnt_rock",
@@ -743,7 +746,7 @@ public class FormatXmlMartrans extends FormatXmlBase {
 			// // return; // TODO TODO:
 			// }
 
-			if (variable.getField("TEMP.sect_substrate").equals("Häll")) {
+			if (variable.getField("TEMP.sect_substrate").equals("HÃ¤ll")) {
 				variable.getParent().addField("sample.section_substrate_cover_rock",
 						variable.getField("TEMP.sect_substrate_cover"));
 				variable.getParent().addField("sample.section_substrate_comnt_rock",
@@ -850,3 +853,4 @@ public class FormatXmlMartrans extends FormatXmlBase {
 	}
 
 }
+*/

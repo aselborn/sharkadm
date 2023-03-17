@@ -67,7 +67,6 @@ se\smhi\sharkadm\datasets\formats\FormatFileZoobenthos.class
 se\smhi\sharkadm\datasets\columns\ColumnViewManager.class
 se\smhi\sharkadm\userinterface\SharkAdmMainUiSettings.class
 se\smhi\sharkadm\userinterface\parts\SpeciesItemViewerUi$1.class
-se\smhi\sharkadm\ziparchive\Mprog.class
 se\smhi\sharkadm\species_old\TaxonObject.class
 se\smhi\sharkadm\ziparchive\ZipArchiveGenerateDataColumns.class
 se\smhi\sharkadm\userinterface\SharkAdmMainWindow$1.class
@@ -128,6 +127,7 @@ se\smhi\sharkadm\screening\DoubletScreening.class
 se\smhi\sharkadm\userinterface\parts\ImportDatasetsUi$7.class
 se\smhi\sharkadm\fileimport\misc\FileImportRedListSpecies.class
 se\smhi\sharkadm\species_old\TaxonNameObject.class
+se\smhi\sharkadm\verifydata\Mprog.class
 se\smhi\sharkadm\datasets\formats\FormatFileBeda.class
 se\smhi\sharkadm\utils\ConvUtils.class
 se\smhi\sharkadm\fileimport\misc\FileImportTranslateCodes_NEW.class
@@ -207,7 +207,6 @@ se\smhi\sharkadm\userinterface\parts\ImportDatasetsUi$12$1$1.class
 se\smhi\sharkadm\userinterface\parts\ImportDatasetsUi$5.class
 se\smhi\sharkadm\datasets\fileimport\FileImportUtils.class
 se\smhi\sharkadm\translate\TranslateCodesManager_NEW.class
-se\smhi\sharkadm\datasets\formats\FormatXmlMartrans$NodeFilterElements.class
 se\smhi\sharkadm\species_old\TaxonManager.class
 se\smhi\sharkadm\datasets\formats\FormatFileJellyfish.class
 se\smhi\sharkadm\datasets\calc\BqiShapefileReader.class
@@ -219,7 +218,6 @@ se\smhi\sharkadm\facades\DatabaseFacade.class
 se\smhi\sharkadm\species_old\TaxonNameComparator.class
 se\smhi\sharkadm\userinterface\SharkAdmMainWindow.class
 se\smhi\sharkadm\userinterface\parts\DatabaseBrowserUi$10.class
-se\smhi\sharkadm\datasets\formats\FormatXmlMartrans.class
 sharkadm\locations_TEST\LocationExports.class
 se\smhi\sharkadm\ziparchive\ZipArchiveGenerateData.class
 se\smhi\sharkadm\userinterface\parts\ImportDatasetsUi$11.class

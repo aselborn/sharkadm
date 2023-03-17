@@ -81,19 +81,23 @@ public class FormatFileRingedseal extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "data.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.dat"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.dat");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			} else if (Files.exists(Paths.get(zipFileName, "processed_data", "data.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "data.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			}
-			// Import.
+
+			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
+			bufferedReader = verifyDataFile(filePath.toFile());
+
+			if (bufferedReader == null)
+				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+			// Import of file DATA.txt.
 			if (bufferedReader != null) {
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				importData(fileContent);
-			} 
+			}
 		} catch (Exception e) {
 			importInfo.addConcatError("FAILED TO IMPORT FILE.");
 		}
@@ -163,12 +167,12 @@ public class FormatFileRingedseal extends FormatFileBase {
 				// Comment to be used on calculated parameters. See postReformatVariable(). 
 				String iceObsString = "";				
 				if (!getCell(row, "ICE_OBS").equals("")) {
-					iceObsString = "Årets yta: " + getCell(row, "ICE_OBS") + "%. ";
+					iceObsString = "ï¿½rets yta: " + getCell(row, "ICE_OBS") + "%. ";
 				}
 				String commentString = 
-					"Beräkningen baseras på andelen inventerad isyta. " +
+					"Berï¿½kningen baseras pï¿½ andelen inventerad isyta. " +
 					iceObsString +
-					"(Kan användas för årsvis summering.)";
+					"(Kan anvï¿½ndas fï¿½r ï¿½rsvis summering.)";
 				currentVariable.addField("TEMP.variable_comment", commentString);
 				
 				addedItems++;

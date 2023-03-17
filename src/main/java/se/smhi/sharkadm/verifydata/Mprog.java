@@ -1,4 +1,4 @@
-package se.smhi.sharkadm.ziparchive;
+package se.smhi.sharkadm.verifydata;
 
 /*
  * This class represents the row and the tag for the missing MPROG.

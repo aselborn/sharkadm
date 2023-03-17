@@ -6,14 +6,18 @@
 
 package se.smhi.sharkadm.datasets.formats;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.opencsv.*;
+import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
 import se.smhi.sharkadm.datasets.fileimport.FileImportInfo;
 import se.smhi.sharkadm.datasets.fileimport.FileImportUtils;
 import se.smhi.sharkadm.facades.ModelFacade;
@@ -23,6 +27,7 @@ import se.smhi.sharkadm.model.Variable;
 import se.smhi.sharkadm.model.Visit;
 import se.smhi.sharkadm.utils.ErrorLogger;
 import se.smhi.sharkadm.utils.ParseFileUtil;
+import se.smhi.sharkadm.verifydata.Mprog;
 
 /**
  * Base class for import scripts. 
@@ -48,15 +53,337 @@ public abstract class FormatBase {
 	protected FileImportInfo importInfo;
 	protected FileImportUtils utils;
 
+	private static Logger mLog = Logger.getLogger("mprog-log");
 	public FormatBase(PrintStream logInfo, FileImportInfo importInfo) {
 		this.logInfo = logInfo;
 		this.importInfo = importInfo;
 		this.utils = new FileImportUtils(importInfo);
 	}
-	
+
+	/*
+		A shared base function to verify that DATA.txt contains "MPROG" tag.
+	 */
+	protected BufferedReader verifyDataFile(File inFile){
+
+		boolean isMprogMissing = false;
+		BufferedReader bufReader = null;
+
+		String mProgCode = mprogCodeMissing(inFile.toPath());
+
+		if (mProgCode != null){
+
+			mLog.log(Level.INFO, "The file ".concat(inFile.getAbsolutePath())
+					.concat(" does not have MPROG column! program has fetched = "
+							.concat(mProgCode).concat(" from delivery_note.txt")));
+
+			isMprogMissing=true;
+			return insertMprogToData(Paths.get(inFile.getAbsolutePath()), mProgCode);
+
+		} else {
+			List<Mprog> listMissing = verifyColumnName(Paths.get(inFile.getAbsolutePath().toString()));
+			if (listMissing.size() > 0){
+
+				mLog.log(Level.INFO, "The file ".concat(inFile.getAbsolutePath())
+						.concat(" has MPROG, but in ".concat(String.valueOf(listMissing.size()).concat(" cases the MPROG is empty"))));
+
+				isMprogMissing=true;
+
+				return insertSelectiveMprogToData(Paths.get(inFile.getAbsolutePath()), listMissing);
+			}
+
+		}
+
+		return null;
+	}
+
+	/*
+		if any file is ending with .mprog. Remove the original file and rename this to the original filename.
+	 */
+	protected void renameAndDelete(File inFile){
+
+		File dirs = new File(inFile.getParentFile().getAbsolutePath());
+		File[] dirList = dirs.listFiles();
+		for (File file : dirList){
+			if (file.isFile()){
+				if (file.getName().contains(".mprog")) {
+
+					try {
+						Files.deleteIfExists(inFile.toPath());
+						Files.move(file.toPath(), file.toPath().resolveSibling("data.dat"));
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * This method will insert mprogTag to specific rows to mprog_data.txt file.
+	 */
+	private BufferedReader insertSelectiveMprogToData(Path path, List<Mprog> listMissing ){
+
+		String filePathData = path.toString();
+		//String outputFile = path.toString().replace("data.txt", "mprog_data.txt");
+		String outputFile = path.toString().concat(".mprog");
+
+		try {
+			CSVParser csvParser = new CSVParserBuilder()
+					.withSeparator('\t')
+					.withIgnoreQuotations(true)
+					.build();
+
+			CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePathData))
+					//.withSkipLines(1)
+					.withCSVParser(csvParser)
+					.build();
+
+			try {
+				ICSVWriter writer = new CSVWriterBuilder(new FileWriter(outputFile))
+						.withSeparator('\t')
+						.withQuoteChar(CSVWriter.NO_QUOTE_CHARACTER)
+						.build();
+
+				int rowCounter = 0;
+				int colMprog = 0;
+				List<String[]> allFileLines = csvReader.readAll();
+				int listKeyCount = 0;
+
+				int rowKey = 0;
+				Mprog myMprog = null;
+				for (String[] rowData : allFileLines){
+
+					if (rowKey == 0){
+						if ( !(listKeyCount >= listMissing.size()) ){
+							myMprog = listMissing.get(listKeyCount);
+							rowKey = myMprog.getRowNo();
+						}
+
+					}
+
+					ArrayList<String> csvList = new ArrayList<String>(Arrays.asList(rowData));
+
+					if (rowCounter == 0){
+						colMprog = csvList.indexOf("MPROG");
+					}
+
+					if (rowCounter == rowKey){
+						csvList.set(colMprog, myMprog.getmProg());
+						rowKey=0;
+						listKeyCount++;
+					}
+
+					rowCounter++;
+					writer.writeNext(listToSTringArray(csvList));
+				}
+
+				writer.close();
+				return new BufferedReader(new FileReader(outputFile));
+
+			} catch (IOException  | CsvException e) {
+				e.printStackTrace();
+			}
+
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private static String[] listToSTringArray(List<String> csvList){
+
+		Object[] myData = csvList.toArray(new String[csvList.size()]);
+		String[] stringArray = Arrays.copyOf(myData, myData.length, String[].class);
+
+		return stringArray;
+	}
+
+	private List<Mprog> verifyColumnName(Path path) {
+
+		String mProgCode = getMprogValueFromDeliveryNote(path);
+		String filePathData = path.toString();
+
+		List<Mprog> mprogList = new ArrayList<Mprog>();
+
+		try {
+			BufferedReader data = new BufferedReader(new InputStreamReader(new FileInputStream(filePathData), "Cp1252"));
+
+			String firstLine = data.readLine();
+
+			if (firstLine.contains("MPROG")){
+				CSVParser csvParser = new CSVParserBuilder()
+						.withSeparator('\t')
+						.withIgnoreQuotations(true)
+						.build();
+
+				CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePathData))
+						//.withSkipLines(1)
+						.withCSVParser(csvParser)
+						.build();
+
+				String[] entries = null;
+				int colIndex = 0;
+				List<String> columnData = new ArrayList<String>();
+
+				int cnt = 0;
+
+				try {
+					while ((entries = csvReader.readNext()) != null) {
+						if (cnt ==0){
+							columnData = Arrays.asList(entries);
+							colIndex = columnData.indexOf("MPROG");
+						}
+
+						String currentMprogValue = entries[colIndex];
+						if (currentMprogValue.length() == 0){ // The value is empty. Fetch it from delivery_note.txt
+							//mprogList.put(cnt, mProgCode);
+							Mprog mprog = new Mprog();
+							mprog.setRowNo(cnt);
+							mprog.setmProg(mProgCode);
+							mprogList.add( mprog);
+						}
+						cnt++;
+					}
+				} catch (CsvValidationException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
+		return mprogList;
+	}
+	/*
+	 * This method will insert the mProgTag to mprog_data.txt file.
+	 */
+	private BufferedReader insertMprogToData(Path path, String mProgCode) {
+
+		String filePathData = path.toString();
+		//String outputFile = path.toString().replace("data.txt", "mprog_data.txt");
+		String outputFile = path.toString().concat(".mprog");
+		try {
+
+			CSVParser csvParser = new CSVParserBuilder()
+					.withSeparator('\t')
+					.withIgnoreQuotations(true)
+					.build();
+
+			CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePathData))
+					//.withSkipLines(1)
+					.withCSVParser(csvParser)
+					.build();
+
+			ICSVWriter writer = new CSVWriterBuilder(new FileWriter(outputFile))
+					.withSeparator('\t')
+					.withQuoteChar(CSVWriter.NO_QUOTE_CHARACTER)
+					.build();
+			int cnt = 0;
+
+			String[] entries = null;
+			while ((entries = csvReader.readNext()) != null) {
+
+				ArrayList<String> list = new ArrayList<String>(Arrays.asList(entries));
+
+				if (cnt == 0){
+					list.add("MPROG");
+				} else{
+					list.add(mProgCode); // Add the new element here
+				}
+				int cols = list.size();
+				Object[] myData = list.toArray(new String[cols]);
+				String[] stringArray = Arrays.copyOf(myData, myData.length, String[].class);
+
+				writer.writeNext(stringArray);
+				cnt++;
+			}
+
+			writer.close();
+			return new BufferedReader(new FileReader(outputFile));
+
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CsvException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+
+	private String mprogCodeMissing(Path path){
+
+		String mProgCode = null;
+
+		try {
+			String filePathData = path.toString();
+			BufferedReader data = new BufferedReader(new InputStreamReader(new FileInputStream(filePathData), "Cp1252"));
+
+			String firstLine = data.readLine();
+
+			if (!firstLine.contains("MPROG")){
+				data.close();
+				return getMprogValueFromDeliveryNote(path);
+			}
+
+			data.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return mProgCode;
+	}
+
+	/*
+	 * Returns the content from "Övervakningsprogram: " in delivery_note.txt
+	 */
+	private String getMprogValueFromDeliveryNote(Path inPath){
+
+		String mprogValue = "";
+		String filePathData = inPath.toString();
+		String filePathDelivery = filePathData.replace("data.txt", "delivery_note.txt");
+		try {
+			BufferedReader delivery = new BufferedReader(new InputStreamReader(new FileInputStream(filePathDelivery), "Cp1252"));
+
+			String line = null;
+
+			while ((line = delivery.readLine()) != null) {
+				System.out.println(line);
+				if (line.contains("övervakningsprogram:")){
+					String p[] = line.split(":");
+					mprogValue = p[1].trim();
+					continue;
+				}
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return mprogValue;
+	}
+
 	// These abstract functions must be implemented in sub-classes.
 
-	
 
 	public abstract void importFiles(String zipFileName, Dataset dataset);
 	
