@@ -6,7 +6,8 @@
 
     <groupId>se.smhi</groupId>
     <artifactId>SharkAdm</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -78,6 +79,24 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.xerces/org.apache.xerces -->
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geotools.jdbc</groupId>
+            <artifactId>gt-jdbc-postgis</artifactId>
+            <version>27.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.geotools/gt-shapefile -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
+            <version>27.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.xerces</groupId>
@@ -93,6 +112,7 @@
     </dependencies>
 
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -121,6 +141,7 @@
                                 </transformer>
                             </transformers>
                             <finalName>SharkAdm</finalName>
+
                         </configuration>
 
                     </execution>

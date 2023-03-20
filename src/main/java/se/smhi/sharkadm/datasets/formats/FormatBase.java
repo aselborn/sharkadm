@@ -118,7 +118,7 @@ public abstract class FormatBase {
 
 		try {
 			CSVParser csvParser = new CSVParserBuilder()
-					.withSeparator('\t')
+					.withSeparator(getSeparator(filePathData))
 					.withIgnoreQuotations(true)
 					.build();
 
@@ -129,7 +129,7 @@ public abstract class FormatBase {
 
 			try {
 				ICSVWriter writer = new CSVWriterBuilder(new FileWriter(outputFile))
-						.withSeparator('\t')
+						.withSeparator(getSeparator(filePathData))
 						.withQuoteChar(CSVWriter.NO_QUOTE_CHARACTER)
 						.build();
 
@@ -207,7 +207,7 @@ public abstract class FormatBase {
 
 			if (firstLine.contains(colCodeMissing)){
 				CSVParser csvParser = new CSVParserBuilder()
-						.withSeparator('\t')
+						.withSeparator(getSeparator(filePathData))
 						.withIgnoreQuotations(true)
 						.build();
 
@@ -257,6 +257,21 @@ public abstract class FormatBase {
 
 		return mprogList;
 	}
+
+
+	private char getSeparator(String filePathData){
+
+		char sep = '\t'; // the default separator (.txt-files)
+
+		String extension = com.google.common.io.Files.getFileExtension(filePathData);
+
+		if (extension.compareTo("skv") == 0){
+			sep = ';';
+		}
+
+		return sep;
+	}
+
 	/*
 	 * This method will create a correct file in form of a temp-file.
 	 */
@@ -274,7 +289,7 @@ public abstract class FormatBase {
 		try {
 
 			CSVParser csvParser = new CSVParserBuilder()
-					.withSeparator('\t')
+					.withSeparator(getSeparator(filePathData))
 					.withIgnoreQuotations(true)
 					.build();
 
@@ -284,7 +299,7 @@ public abstract class FormatBase {
 					.build();
 
 			ICSVWriter writer = new CSVWriterBuilder(new FileWriter(outputFile))
-					.withSeparator('\t')
+					.withSeparator(getSeparator(filePathData))
 					.withQuoteChar(CSVWriter.NO_QUOTE_CHARACTER)
 					.build();
 			int cnt = 0;
@@ -356,7 +371,14 @@ public abstract class FormatBase {
 
 		String mprogValue = "";
 		String filePathData = inPath.toString();
-		String filePathDelivery = filePathData.replace("data.txt", "delivery_note.txt");
+
+		//We expect a file called 'delivery_note.txt' to exist!
+		String filePathDelivery = inPath.getParent().toString().concat("\\").concat("delivery_note.txt");
+		File f = new File(filePathDelivery);
+		if (!f.exists()){
+			mLog.log(Level.WARNING, "The file delivery_note.txt does not exist in folder : ".concat(inPath.toFile().getParent()));
+			return "";
+		}
 		try {
 			BufferedReader delivery = new BufferedReader(new InputStreamReader(new FileInputStream(filePathDelivery), "Cp1252"));
 

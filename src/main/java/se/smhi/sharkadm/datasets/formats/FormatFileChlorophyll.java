@@ -280,13 +280,13 @@ public class FormatFileChlorophyll extends FormatFileBase {
 		}
 
 		// SFLAG<|>SAFLG:
-		//    0 = no sample/data [l‰ses inte in i db]
+		//    0 = no sample/data [l√§ses inte in i db]
 		//    1 = data OK [QFLAG=A]
 		//
 		// QFLAG<|>QCHLA:
-		//    "<" = less than [behÂll "<" som QFLAG]
-		//    A [behÂll "A" som QFLAG]
+		//    "<" = less than [beh√•ll "<" som QFLAG]
+		//    A [beh√•ll "A" som QFLAG]
 		//
-		// Ifall bÂde QFLAG och SFLAG, sÂ har QFLAG fˆretr‰de.		
+		// Ifall b√•de QFLAG och SFLAG, s√• har QFLAG f√∂retr√§de.		
 	}
 }

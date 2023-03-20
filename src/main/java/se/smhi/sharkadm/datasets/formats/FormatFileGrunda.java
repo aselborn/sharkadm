@@ -73,7 +73,12 @@ public class FormatFileGrunda extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "transekt.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "transekt.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importTransect(fileContent);
@@ -81,7 +86,12 @@ public class FormatFileGrunda extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "hyd.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "hyd.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importHyd(fileContent);
@@ -89,7 +99,12 @@ public class FormatFileGrunda extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "segment.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "segment.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importSegment(fileContent);
@@ -97,7 +112,12 @@ public class FormatFileGrunda extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "ruta.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "ruta.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importSquare(fileContent);

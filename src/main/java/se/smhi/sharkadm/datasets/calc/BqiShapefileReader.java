@@ -10,19 +10,20 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.FeatureSource;
+import org.geotools.data.*;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTReader;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.WKTReader;
+//import com.vividsolutions.jts.geom.Geometry;
+//import com.vividsolutions.jts.geom.Point;
+//import com.vividsolutions.jts.io.WKTReader;
 
 import se.smhi.sharkadm.utils.ErrorLogger;
 import se.smhi.sharkadm.utils.GeodesiSwedishGrids;
@@ -68,12 +69,19 @@ public class BqiShapefileReader {
 //			String shapefileName = "havdirtyper_2012_delatKattegatt.shp";
 			String shapefilePath = "\\\\winfs\\data\\prodkap\\sharkweb\\SHARK_CONFIG\\sharkweb_shapefiles\\";
 			String shapefileName = "Havsomr_SVAR_2016_3c_CP1252.shp";
+
 			File file = new File(shapefilePath + shapefileName);
+
 			try {
-				Map connect = new HashMap();
-				connect.put("url", file.toURL());
-				
-				DataStore dataStore = DataStoreFinder.getDataStore(connect);
+				//Map connect = new HashMap();
+				Map<String, Object> connect = new HashMap<>();
+
+				//connect.put("url", file.toURL());
+				connect.put("url", file.toPath());
+
+				FileDataStore dataStore = FileDataStoreFinder.getDataStore(file);
+
+				//DataStore dataStore = DataStoreFinder.getDataStore(connect);
 				String[] typeNames = dataStore.getTypeNames();
 				String typeName = typeNames[0];
 				
@@ -82,10 +90,11 @@ public class BqiShapefileReader {
 	//			FeatureIterator iterator = collection.features();
 				
 				//GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-				//this.reader = new WKTReader(geometryFactory);
-
 				GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-				this.reader = new WKTReader();
+				this.reader = new WKTReader(geometryFactory);
+
+				//GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+				//this.reader = new WKTReader();
 				
 			} catch (Exception e) {
 				System.out.println("Exception in ShapeFileReader: " + e.getMessage());
@@ -99,7 +108,8 @@ public class BqiShapefileReader {
 			while (iterator.hasNext()) {
 				Feature feature = iterator.next();
 				SimpleFeature simpleFeature = (SimpleFeature) feature;
-				Geometry geom = (Geometry) simpleFeature.getDefaultGeometry();				
+				Geometry geom = (Geometry) simpleFeature.getDefaultGeometry();
+
 				if (geom.contains(pointSweref99Tm)) {
 //					typ_nfs06 = feature.getProperty("TYP_HAVDIR").getValue().toString();
 					

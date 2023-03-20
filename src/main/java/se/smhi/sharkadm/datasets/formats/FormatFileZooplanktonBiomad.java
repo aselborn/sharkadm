@@ -73,7 +73,12 @@ public class FormatFileZooplanktonBiomad extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "station.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "station.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importStation(fileContent);

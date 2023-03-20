@@ -71,7 +71,10 @@ public class FormatFileProfile extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "metadata.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "metadata.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 			}
 			// Import.
 			if (bufferedReader != null) {

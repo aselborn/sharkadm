@@ -32,8 +32,7 @@ public class SharkAdmMainStatusBar {
 	private static String string2 = "";	
 	private static String string3 = "";	
 	private static String string4 = "";	
-	private static String string5 = "";	
-	
+	private static String string5 = "";
 	private FormData formData;
 
 	public SharkAdmMainStatusBar(Composite parent) {
@@ -172,5 +171,6 @@ public class SharkAdmMainStatusBar {
 			SharkAdmMainStatusBar.field5.setText(value);
 		}
 	}
+
 
 }

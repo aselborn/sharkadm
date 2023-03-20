@@ -30,6 +30,7 @@ import se.smhi.sharkadm.model.Sample;
 import se.smhi.sharkadm.model.Variable;
 import se.smhi.sharkadm.model.Visit;
 import se.smhi.sharkadm.userinterface.SharkAdmMainStatusBar;
+import se.smhi.sharkadm.userinterface.SharkAdmMainWindow;
 
 public class ModelViewerTreeUi extends TreeViewer implements Observer {
 	private ModelViewerElementItemUi modelElementItem;
@@ -76,7 +77,8 @@ public class ModelViewerTreeUi extends TreeViewer implements Observer {
 	public void resetInput() {
 		Object datasetNoteArray[] = ModelTopNode.instance().getDatasetList().toArray();
 		this.setInput(datasetNoteArray);
-		SharkAdmMainStatusBar.setField3("Memory model: " + datasetNoteArray.length + " items");
+		SharkAdmMainStatusBar.setField3("Memory models: " + datasetNoteArray.length + " items");
+
 		this.refresh();
 	}
 

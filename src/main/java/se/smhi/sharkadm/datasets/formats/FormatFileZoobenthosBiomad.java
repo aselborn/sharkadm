@@ -75,12 +75,19 @@ public class FormatFileZoobenthosBiomad extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "station.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "station.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
-				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
-				if (fileContent != null) {
-					importStation(fileContent);
-				} else {
-					importInfo.addConcatWarning("File missing or empty: station.skv.");
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				// Import.
+				if (bufferedReader != null){
+					fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
+					if (fileContent != null) {
+						importStation(fileContent);
+					} else {
+						importInfo.addConcatWarning("File missing or empty: station.skv.");
+					}
 				}
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "sample.skv"))) {
