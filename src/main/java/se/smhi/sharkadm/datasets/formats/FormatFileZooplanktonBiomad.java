@@ -88,7 +88,12 @@ public class FormatFileZooplanktonBiomad extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "sample.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "sample.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importSample(fileContent);
@@ -98,7 +103,12 @@ public class FormatFileZooplanktonBiomad extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "abundance.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "abundance.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importAbundance(fileContent);
@@ -118,8 +128,14 @@ public class FormatFileZooplanktonBiomad extends FormatFileBase {
 //			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "indwetwt.skv"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "indwetwt.skv");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
+
 				if (fileContent != null) {
 					importIndwetwt(fileContent);
 				} else {

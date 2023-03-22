@@ -78,8 +78,14 @@ public class FormatFilePhysicalChemical extends FormatFileBase {
 		try {
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "sampling_info.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "sampling_info.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
+
 				if (fileContent != null) {
 					importSamplingInfo(fileContent);
 				} else {
@@ -88,7 +94,11 @@ public class FormatFilePhysicalChemical extends FormatFileBase {
 			}
 			if (Files.exists(Paths.get(zipFileName, "processed_data", "analyse_info.txt"))) {
 				filePath = Paths.get(zipFileName, "processed_data", "analyse_info.txt");
-				bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
+				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+				if (bufferedReader == null)
+					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
+
 				fileContent = ParseFileUtil.parseDataFile(bufferedReader, true);
 				if (fileContent != null) {
 					importAnalyseInfo(fileContent);

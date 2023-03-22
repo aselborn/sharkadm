@@ -61,7 +61,7 @@ public abstract class FormatBase {
 	}
 
 	/*
-		A shared base function to verify that DATA.txt contains "MPROG" tag.
+		A shared base function to verify that some textfile contains the input 'colCodeMissing'
 	 */
 	protected BufferedReader verifyDataFile(File inFile, String colCodeMissing){
 
@@ -96,15 +96,8 @@ public abstract class FormatBase {
 		return null;
 	}
 
-
-
 	/*
-		if any file is ending with .mprog. Remove the original file and rename this to the original filename.
-	 */
-
-
-	/*
-	 * This method will insert mprogTag to specific rows to mprog_data.txt file.
+	 * This method will insert missing code to specific rows.
 	 */
 	private BufferedReader insertSelectiveCodeToData(Path path, List<ColumnCode> listMissing, String code ){
 
@@ -153,7 +146,6 @@ public abstract class FormatBase {
 					ArrayList<String> csvList = new ArrayList<String>(Arrays.asList(rowData));
 
 					if (rowCounter == 0){
-						//colCodeMissing = csvList.indexOf("MPROG");
 						colCodeMissing = csvList.indexOf(code);
 					}
 
@@ -169,16 +161,17 @@ public abstract class FormatBase {
 
 				writer.flush();
 				writer.close();
-				writer = null;
 
 				return new BufferedReader(new FileReader(outputFile));
 
 			} catch (IOException  | CsvException e) {
+				mLog.log(Level.SEVERE, e.toString());
 				e.printStackTrace();
 			}
 
 
 		} catch (FileNotFoundException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		}
 
@@ -212,7 +205,6 @@ public abstract class FormatBase {
 						.build();
 
 				CSVReader csvReader = new CSVReaderBuilder(new FileReader(filePathData))
-						//.withSkipLines(1)
 						.withCSVParser(csvParser)
 						.build();
 
@@ -230,12 +222,13 @@ public abstract class FormatBase {
 						}
 
 						String currentMprogValue = entries[colIndex];
-						if (currentMprogValue.length() == 0){ // The value is empty. Fetch it from delivery_note.txt
+						if (currentMprogValue.length() == 0){
 
 							ColumnCode colCode = new ColumnCode();
 							colCode.setRowNo(cnt);
 							colCode.setColCode(mProgCode);
 							mprogList.add(colCode);
+
 						}
 						cnt++;
 					}
@@ -245,13 +238,13 @@ public abstract class FormatBase {
 			}
 
 		} catch (UnsupportedEncodingException e) {
-
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
-
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		}
 
@@ -283,6 +276,7 @@ public abstract class FormatBase {
 		try {
 			outputFile = Files.createTempFile("TempFil", ".tmp").toFile().getAbsolutePath();
 		} catch (IOException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			throw new RuntimeException(e);
 		}
 
@@ -327,10 +321,13 @@ public abstract class FormatBase {
 
 
 		} catch (FileNotFoundException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (CsvException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		}
 
@@ -356,6 +353,7 @@ public abstract class FormatBase {
 			data.close();
 
 		} catch (IOException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 			return null;
 		}
@@ -394,10 +392,13 @@ public abstract class FormatBase {
 			}
 
 		} catch (UnsupportedEncodingException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
+			mLog.log(Level.SEVERE, e.toString());
 			e.printStackTrace();
 		}
 

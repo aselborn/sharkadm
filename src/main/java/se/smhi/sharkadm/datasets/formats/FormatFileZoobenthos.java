@@ -81,7 +81,6 @@ public class FormatFileZoobenthos extends FormatFileBase {
 				filePath = Paths.get(zipFileName, "processed_data", "data.skv");
 			}
 
-			//Verify that DATA.txt HAS MPROG! If not, add it, then read it.
 			bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
 
 			if (bufferedReader == null)

@@ -77,6 +77,7 @@ public class FormatFileZoobenthosBiomad extends FormatFileBase {
 				filePath = Paths.get(zipFileName, "processed_data", "station.skv");
 
 				bufferedReader = verifyDataFile(filePath.toFile(), "MPROG");
+
 				if (bufferedReader == null)
 					bufferedReader = new BufferedReader(new FileReader(filePath.toFile()));
 

@@ -6,10 +6,8 @@
 
 package se.smhi.sharkadm.datasets.fileimport;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,14 +49,17 @@ public class SharkFolderReader {
 		Map<String, String> info = null;
 		Path deliveryNotePath = Paths.get(this.sharkFolderName, "processed_data", "delivery_note.txt");
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(deliveryNotePath.toFile()));
+			//BufferedReader bufferedReader = new BufferedReader(new FileReader(deliveryNotePath.toFile()));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(deliveryNotePath.toFile()), "ISO-8859-1"));
 			info = parseDatasetNoteFile(bufferedReader);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
 		}
-		
-		
+
+
 		// Check if dataset is ready for Production, or just for test.
 		
 		if (info.containsKey("status")) {
@@ -120,7 +121,7 @@ public class SharkFolderReader {
 				targetMap.put("dataset.data_checked_by_sv", checkedBy);				
 				targetMap.put("dataset.data_checked_by_en", "Deliverer and Datacenter");				
 			} else {
-				targetMap.put("dataset.check_status_sv", "P�g�ende-SMHI");
+				targetMap.put("dataset.check_status_sv", "Pågående-SMHI");
 				targetMap.put("dataset.check_status_en", "Pending-SMHI");
 				targetMap.put("dataset.data_checked_by_sv", checkedBy);
 				if (checkedBy.equals("Leverant�r")) {
@@ -133,7 +134,7 @@ public class SharkFolderReader {
 			// Default for biology.
 			targetMap.put("dataset.check_status_sv", "Klar");
 			targetMap.put("dataset.check_status_en", "Completed");
-			targetMap.put("dataset.data_checked_by_sv", "Leverant�r");
+			targetMap.put("dataset.data_checked_by_sv", "Leverantör");
 			targetMap.put("dataset.data_checked_by_en", "Deliverer");
 		}
 		
