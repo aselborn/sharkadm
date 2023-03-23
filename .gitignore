@@ -27,4 +27,7 @@ replay_pid*
 shark_adm_log.txt
 mprog-log*
 
+#db-file
+*.db
+
 /target

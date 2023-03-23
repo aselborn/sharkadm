@@ -136,7 +136,7 @@ public class FormatFileBeda extends FormatFileBase {
 	}
 
 	private void importHugg(List<String[]> fileContent) {
-//		Undersökning	stnbet	stnnamn	station.latitud	station.longitud	kluster	kluster_beskrivning	station.djup	station.djupintervall	station.kommentar	Mprog	besok.datum	expledare	kvalitetsgranskare	besok.djup	besok.djupintervall	besok.latitud	besok.longitud	slabo	ackrediterad	uppdragsgivare	projektnr	shipc	posys	vindriktning	vindhastighet	vaghojd	besok.h2s	sedimentbeskrivning	oxideratskikt	besok.faltkommentar	besok.labkommentar	SMTYP	provNr	ovreSall	nedreSall	huggyta	huggvikt	provvolym	provdjup	noFauna	METFP	prov.h2s	poolat	alabo	sorteratAv	vagtAv	sorteringsdatum	vagningsdatum	prov.faltkommentar	prov.labkommentar	nport	cport	taxonID	namn	taxon.datum	sflag	abundans	vvprefix	vatvikt	tvprefix	torrvikt	atvvprefix	askfritorrvikt	determinator	provart.kommentar	countnr
+//		UndersÃ¶kning	stnbet	stnnamn	station.latitud	station.longitud	kluster	kluster_beskrivning	station.djup	station.djupintervall	station.kommentar	Mprog	besok.datum	expledare	kvalitetsgranskare	besok.djup	besok.djupintervall	besok.latitud	besok.longitud	slabo	ackrediterad	uppdragsgivare	projektnr	shipc	posys	vindriktning	vindhastighet	vaghojd	besok.h2s	sedimentbeskrivning	oxideratskikt	besok.faltkommentar	besok.labkommentar	SMTYP	provNr	ovreSall	nedreSall	huggyta	huggvikt	provvolym	provdjup	noFauna	METFP	prov.h2s	poolat	alabo	sorteratAv	vagtAv	sorteringsdatum	vagningsdatum	prov.faltkommentar	prov.labkommentar	nport	cport	taxonID	namn	taxon.datum	sflag	abundans	vvprefix	vatvikt	tvprefix	torrvikt	atvvprefix	askfritorrvikt	determinator	provart.kommentar	countnr
 
 		String[] header = null;
 		if (ImportFacade.instance().isShowInfo()) {
@@ -185,7 +185,7 @@ public class FormatFileBeda extends FormatFileBase {
 	}
 
 	private void importGlodVatten(List<String[]> fileContent) {
-//		Undersökning	stnbet	datum	provNr	SMTYP	kommentar	ovreniv	nedreniv	vattenhalt	glodforlust
+//		UndersÃ¶kning	stnbet	datum	provNr	SMTYP	kommentar	ovreniv	nedreniv	vattenhalt	glodforlust
 		
 		String[] header = null;
 		if (ImportFacade.instance().isShowInfo()) {
@@ -226,7 +226,7 @@ public class FormatFileBeda extends FormatFileBase {
 	}
 	
 	private void importBottenvatten(List<String[]> fileContent) {
-//		Undersökning	stnbet	datum	bottenvattenProv.provnr	SMTYP	kommentar	bottenvatten.provnr	salinitet	temperatur	syrehalt	syremattnad
+//		UndersÃ¶kning	stnbet	datum	bottenvattenProv.provnr	SMTYP	kommentar	bottenvatten.provnr	salinitet	temperatur	syrehalt	syremattnad
 		
 		String[] header = null;
 		if (ImportFacade.instance().isShowInfo()) {

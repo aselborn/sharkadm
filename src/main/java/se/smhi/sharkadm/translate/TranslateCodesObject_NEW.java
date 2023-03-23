@@ -7,7 +7,71 @@
 package se.smhi.sharkadm.translate;
 
 public class TranslateCodesObject_NEW {
-	
+
+	public String getPublic_value() {
+		return public_value;
+	}
+
+	public void setPublic_value(String public_value) {
+		this.public_value = public_value;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setSwedish(String swedish) {
+		this.swedish = swedish;
+	}
+
+	public void setEnglish(String english) {
+		this.english = english;
+	}
+
+	public String getIces_biology() {
+		return ices_biology;
+	}
+
+	public void setIces_biology(String ices_biology) {
+		this.ices_biology = ices_biology;
+	}
+
+	public String getIces_physical_and_chemical() {
+		return ices_physical_and_chemical;
+	}
+
+	public void setIces_physical_and_chemical(String ices_physical_and_chemical) {
+		this.ices_physical_and_chemical = ices_physical_and_chemical;
+	}
+
+	public String getBodc_nerc() {
+		return bodc_nerc;
+	}
+
+	public void setBodc_nerc(String bodc_nerc) {
+		this.bodc_nerc = bodc_nerc;
+	}
+
+	public String getDarwincore() {
+		return darwincore;
+	}
+
+	public void setDarwincore(String darwincore) {
+		this.darwincore = darwincore;
+	}
+
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	public void setSynonyms(String synonyms) {
+		this.synonyms = synonyms;
+	}
+
 	private String field = "";
 	private String public_value = "";
 	private String code = "";

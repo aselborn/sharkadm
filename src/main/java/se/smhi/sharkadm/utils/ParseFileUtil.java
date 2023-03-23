@@ -6,6 +6,8 @@
 
 package se.smhi.sharkadm.utils;
 
+import se.smhi.sharkadm.sql.SqliteManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,6 +61,9 @@ public class ParseFileUtil {
 			} else {
 				// Checks if file exist outside jar bundle. File service at SMHI.
 				external_file = new File("\\\\winfs\\data\\prodkap\\sharkweb\\SHARK_CONFIG\\" + configFileName);
+
+				SqliteManager.getInstance().fillTable(external_file.toPath());
+
 				if (external_file.exists()) {
 					bufferedReader = new BufferedReader(new FileReader(external_file));
 				} else {

@@ -22,6 +22,7 @@ import se.smhi.sharkadm.model.Dataset;
 import se.smhi.sharkadm.model.Sample;
 import se.smhi.sharkadm.model.Variable;
 import se.smhi.sharkadm.model.Visit;
+import se.smhi.sharkadm.sql.SqliteManager;
 import se.smhi.sharkadm.translate.TranslateCodesManager_NEW;
 import se.smhi.sharkadm.translate.TranslateCodesObject_NEW;
 import se.smhi.sharkadm.utils.ParseFileUtil;
@@ -29,7 +30,7 @@ import se.smhi.sharkadm.utils.ParseFileUtil;
 public class FileImportTranslateCodes_NEW extends SingleFileImport {
 	
 	private TranslateCodesManager_NEW translateCodesManager = TranslateCodesManager_NEW.instance();
-
+	private SqliteManager mSqliteManager = SqliteManager.getInstance();
 	public FileImportTranslateCodes_NEW(PrintStream logInfo) {
 		super(logInfo);
 	}

@@ -23,6 +23,7 @@ import se.smhi.sharkadm.species.TaxaWorms;
 import se.smhi.sharkadm.species.TrophicTypeManager;
 import se.smhi.sharkadm.species_old.TaxonManager;
 import se.smhi.sharkadm.species_old.TaxonNode;
+import se.smhi.sharkadm.sql.SqliteManager;
 import se.smhi.sharkadm.station.StationManager;
 import se.smhi.sharkadm.translate.TranslateCodesManager;
 import se.smhi.sharkadm.translate.TranslateCodesManager_NEW;
@@ -777,6 +778,10 @@ public class MemoryModelReformatData extends ModelVisitor {
 			sample.addField("sample.sample_orderer_code", sample.getParent().getParent().getField("dataset.delivery_orderer_code"));
 		}
 
+		/*
+			Bortkommenterat - nedan ?
+		 */
+
 //		// Translate project.
 //		String projectCode = translateCodes.translateSynonym("project", sample.getField("sample.sample_project_code"), importInfo);
 //		sample.addField("sample.sample_project_code", projectCode);
@@ -881,14 +886,32 @@ public class MemoryModelReformatData extends ModelVisitor {
 		
 		// Translate project.
 		String projectCode = sample.getField("sample.sample_project_code");
+		//String projectCode = translateCodes.translateSynonym("project", sample.getField("sample.sample_project_code"),importInfo);
 		if (projectCode.equals("")) {
 			sample.addField("sample.sample_project_name_sv", "-");
 			sample.addField("sample.sample_project_name_en", "-");
 		} else {
+
 			TranslateCodesObject_NEW object = translateCodes_NEW.getCodeObject("sample_project_code", projectCode);
+
 			if (object != null) {
 				sample.addField("sample.sample_project_name_sv", object.getSwedish());
 				sample.addField("sample.sample_project_name_en", object.getEnglish());
+			} else {
+
+				String projectPublicValue = SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "public_value"); //public_value is the data-column name in translate_codes_NEW
+				String projectNameEn =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "english");
+				String projectNameSv =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "swedish");
+
+				if (projectPublicValue != null){
+					sample.addField("sample.sample_project_code", projectPublicValue);
+				}
+				if (projectNameEn != null){
+					sample.addField("sample.sample_project_name_en",projectNameEn);
+				}
+				if (projectNameSv != null){
+					sample.addField("sample.sample_project_name_sv",projectNameSv);
+				}
 			}
 		}
 
