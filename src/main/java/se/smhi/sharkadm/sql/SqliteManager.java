@@ -17,42 +17,24 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SqliteManager extends ConnectionManager{
+public class SqliteManager {
 
 
     public static SqliteManager instance =null ;
-    private Path mPathToDb = null;
-    private static String dbFileName = "sharkadm.db";
+    private Connection mConnection = null;
+    //private Path mPathToDb = null;
+    //private static String dbFileName = "sharkadm.db";
 
     private DbQuery mDbQuery = null;
     private SqliteManager(){
-        mPathToDb = Paths.get(dbFileName);
-        mDbQuery = new DbQuery(mPathToDb);
-
-        verifyDatabase();
-
+        mDbQuery = new DbQuery();
+        mConnection = ConnectionManager.getInstance().getConnection();
     }
 
-    private void verifyDatabase() {
+    private void createTranslateCodeTable(){
 
-        if (!Files.exists(mPathToDb)){
-            createDatabase(mPathToDb);
-        }
+        dropTable("translate_codes_NEW");
 
-    }
-
-    private void createDatabase(Path dbPath) {
-        String url = "jdbc:sqlite:".concat(dbPath.toAbsolutePath().toString());
-        try {
-            Connection cn = DriverManager.getConnection(url);
-            System.out.println("A database was created.");
-            createTables(url);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void createTables(String dbPath){
         StringBuilder bu = new StringBuilder();
         bu.append("CREATE TABLE translate_codes_NEW (");
         bu.append(" id INTEGER PRIMARY KEY AUTOINCREMENT,  ");
@@ -70,8 +52,7 @@ public class SqliteManager extends ConnectionManager{
         bu.append("comments TEXT, ");
         bu.append("source TEXT)");
 
-        try (Connection conn = getConnection(mPathToDb);
-             Statement stmt = conn.createStatement()) {
+        try (Statement stmt = mConnection.createStatement()) {
             stmt.execute(bu.toString());
 
         } catch (SQLException e) {
@@ -96,6 +77,7 @@ public class SqliteManager extends ConnectionManager{
 
         switch (fileName.getFileName().toString()){
             case "translate_codes_NEW.txt":
+                createTranslateCodeTable();
                 insertTranslateCodes(fileName);
                 break;
 
@@ -107,7 +89,7 @@ public class SqliteManager extends ConnectionManager{
     private void insertTranslateCodes(Path fileName) {
 
         StringBuilder bu = new StringBuilder();
-        Connection dbConnection = getConnection(mPathToDb);
+
 
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator('\t')
@@ -123,14 +105,12 @@ public class SqliteManager extends ConnectionManager{
 
             String[] entries = null;
 
-            bu.append(" TRUNCATE TABLE translate_codes_NEW;");
-
             bu.append(" INSERT INTO translate_codes_NEW (field, filter, public_value, code, swedish, english, synonyms, ices_biology, ices_physical_and_chemical, bodc_nerc, darwincore, comments, source)");
             bu.append(" VALUES ");
             bu.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            PreparedStatement psmtm = dbConnection.prepareStatement(bu.toString());
-            dbConnection.setAutoCommit(false);
+            PreparedStatement psmtm = mConnection.prepareStatement(bu.toString());
+            mConnection.setAutoCommit(false);
             while ((entries = csvReader.readNext()) != null) {
 
                 ArrayList<String> list = new ArrayList<String>(Arrays.asList(entries));
@@ -154,11 +134,7 @@ public class SqliteManager extends ConnectionManager{
             }
 
             int[] x = psmtm.executeBatch();
-            dbConnection.commit();
-
-            if (dbConnection != null){
-                dbConnection.close();
-            }
+            mConnection.commit();
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -171,6 +147,10 @@ public class SqliteManager extends ConnectionManager{
         }
 
 
+    }
+
+    private void dropTable(String tableToDrop) {
+        mDbQuery.dropTable(tableToDrop);
     }
 
     public String getTranslateCodeColumnValue(String projectCode, Sample sample, String nameOfColumn) {

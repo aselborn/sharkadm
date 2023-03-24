@@ -56,11 +56,19 @@ public class SharkAdmMainWindow {
 	// Settings are used to store positions etc. during 
 	private SharkAdmMainUiSettings settings = SharkAdmMainUiSettings.instance();
 
+	public SharkAdmMainWindow()
+	{
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public void launchApp() {
 		Display display = new Display();
 		final Shell shell = new Shell(display);
 		shell.setText("SHARKadm - Administration of marine environmental monitoring data ");
-		SharkAdmMainStatusBar.setField1("SharkAdm Version 2.2");
+		SharkAdmMainStatusBar.setField1("SharkAdm Version 2.3");
 		// ========== Window position ==========
 		
 		// Position window at startup. Use default position if at least one corner is outside
@@ -242,7 +250,7 @@ public class SharkAdmMainWindow {
 	    // ========== Show main window ========== 
 
 		shell.open();
-		
+
 	    // ========== Load data at startup ========== 
 
 		ProgressMonitorDialog progress = new ProgressMonitorDialog(shell);
