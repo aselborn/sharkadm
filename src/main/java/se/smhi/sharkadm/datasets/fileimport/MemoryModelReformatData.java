@@ -898,7 +898,6 @@ public class MemoryModelReformatData extends ModelVisitor {
 				sample.addField("sample.sample_project_name_sv", object.getSwedish());
 				sample.addField("sample.sample_project_name_en", object.getEnglish());
 			} else {
-
 				String projectPublicValue = SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "public_value"); //public_value is the data-column name in translate_codes_NEW
 				String projectNameEn =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "english");
 				String projectNameSv =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "swedish");
@@ -913,6 +912,7 @@ public class MemoryModelReformatData extends ModelVisitor {
 					sample.addField("sample.sample_project_name_sv",projectNameSv);
 				}
 			}
+
 		}
 
 		// Translate orderer.
@@ -926,6 +926,13 @@ public class MemoryModelReformatData extends ModelVisitor {
 				sample.addField("sample.sample_orderer_name_sv", object.getSwedish());
 				sample.addField("sample.sample_orderer_name_en", object.getEnglish());
 			}
+			if (object == null){
+
+				String sv = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "swedish");
+				String en = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "english");
+				sample.addField("sample.sample_orderer_name_sv", sv.length() > 0 ? sv : ordererCode );
+				sample.addField("sample.sample_orderer_name_en", en.length() > 0 ? en : ordererCode);
+			}
 		}
 
 		// Translate sampling laboratory.
@@ -938,6 +945,8 @@ public class MemoryModelReformatData extends ModelVisitor {
 			if (object != null) {
 				sample.addField("sample.sampling_laboratory_name_sv", object.getSwedish());
 				sample.addField("sample.sampling_laboratory_name_en", object.getEnglish());
+			} else{
+				String s = "";
 			}
 		}
 

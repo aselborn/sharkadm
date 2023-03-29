@@ -156,4 +156,8 @@ public class SqliteManager {
     public String getTranslateCodeColumnValue(String projectCode, Sample sample, String nameOfColumn) {
         return mDbQuery.getTranslateCodeColumnValue(projectCode, sample, nameOfColumn);
     }
+
+    public String getTranslateCodeColumnValue(String projectCode, String Code, String nameOfColumn){
+        return mDbQuery.getTranslateCodeColumnValue(projectCode, Code, nameOfColumn);
+    }
 }

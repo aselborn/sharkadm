@@ -13,6 +13,7 @@ import se.smhi.sharkadm.datasets.fileimport.FileImportInfo;
 import se.smhi.sharkadm.fileimport.misc.FileImportFilter;
 import se.smhi.sharkadm.fileimport.misc.FileImportTranslate;
 import se.smhi.sharkadm.fileimport.misc.FileImportTranslateAllColumns;
+import se.smhi.sharkadm.sql.SqliteManager;
 
 /**
  * Base class for file import scripts.
@@ -372,6 +373,14 @@ public abstract class FormatFileBase extends FormatBase {
 					}
 				}
 				// Add column value.
+
+				if (key.compareTo("variable.species_flag_code") == 0){
+
+					String publicCodeValue = SqliteManager.getInstance().getTranslateCodeColumnValue("species_flag_code", columnValue, "public_value"); //public_value is the data-column name in translate_codes_NEW
+					if (publicCodeValue.length()>0)
+						columnValue = publicCodeValue;
+				}
+
 				currentVariable.addField(key, columnValue);
 				
 				// Check for QFLAG. Both "variable.QFLAG.Chlorophyll-a" and "TEMP.QFLAG.Aluminium" is allowed. 

@@ -1,5 +1,7 @@
 package se.smhi.sharkadm.sql;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,8 +29,9 @@ public class ConnectionManager {
     private Connection getConnected(){
         try {
             //String url = "jdbc:sqlite:".concat(path.toAbsolutePath().toString());
-            return DriverManager.getConnection("jdbc:sqlite::memory:");
-            //return DriverManager.getConnection(url);
+            String url = "jdbc:sqlite:".concat( new File("sharkadm.db").getAbsolutePath());
+            //return DriverManager.getConnection("jdbc:sqlite::memory:");
+            return DriverManager.getConnection(url);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

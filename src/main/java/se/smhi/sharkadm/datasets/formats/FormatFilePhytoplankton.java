@@ -156,6 +156,7 @@ public class FormatFilePhytoplankton extends FormatFileBase {
 				for (String columnName : header) {
 					String key = translateKey(columnName);
 
+
 					// Check if values for stations and species are translated.
 					// Use value before translation for reported value and after as used value.
 					// If species it is possible to translate to taxon-id.
@@ -241,6 +242,7 @@ public class FormatFilePhytoplankton extends FormatFileBase {
 					currentVariable.addField("variable.bvol_size_class", bvolSizeClass);
 					currentVariable.addField("variable.bvol_aphia_id", bvolAphiaId);
 					currentVariable.addField("variable.bvol_ref_list", bvolRefList);
+
 					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
