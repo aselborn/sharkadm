@@ -39,7 +39,7 @@ public class DbQuery  {
             int cnt = 0;
             while (rs.next()){
                 if (cnt > 0){
-                    codeValues.append("<->");
+                    codeValues.append(",");
                 }
 
                 codeValues.append(rs.getString(nameOfColumn));
@@ -92,7 +92,7 @@ public class DbQuery  {
             int cnt = 0;
             while (rs.next()){
                 if (cnt > 0){
-                    codeValues.append("<->");
+                    codeValues.append(","); //ADDING special sign to user
                 }
                 codeValues.append(rs.getString(nameOfColumn));
                 cnt++;

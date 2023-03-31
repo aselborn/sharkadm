@@ -109,6 +109,8 @@ public class TranslateCodesManager_NEW {
 					this.lookupFieldSynonymToPublicValue.put(synonymFieldValue, value);
 				}
 			}
+
+
 		}
 	}
 

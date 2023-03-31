@@ -223,6 +223,7 @@ public class SaveModel {
 			row.addCleanedString(visit.getField("visit.reported_station_name")); // reported_station_name
 			row.addCleanedString(visit.getField("visit.station_viss_eu_id")); // station_viss_eu_id
 
+
 			columnInfoManager.clearKeyValueStringList();
 			columnInfoManager.addAllFieldsOnNodeLevel(visit, "swedish");
 			row.addCleanedString(columnInfoManager.getKeyValueStringListAsString().replace("<->", ", ")); // keyvalue_visit

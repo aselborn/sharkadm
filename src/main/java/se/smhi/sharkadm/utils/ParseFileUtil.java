@@ -41,10 +41,12 @@ public class ParseFileUtil {
 		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 //		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream inputStream;
-		BufferedReader bufferedReader = null;		
+		BufferedReader bufferedReader = null;
+		File external_file = new File("TEST_SHARK_CONFIG\\" + configFileName);
+
 		try {
 			// Checks if file exist in current directory.
-			File external_file = new File("TEST_SHARK_CONFIG\\" + configFileName);
+
 			if (external_file.exists()) {
 
 				if (charset.equals("")) {
@@ -60,7 +62,16 @@ public class ParseFileUtil {
 				System.out.println("\nNOTE: LOCAL COPY IN TEST_SHARK_CONFIG:" + configFileName + "\n");
 			} else {
 				// Checks if file exist outside jar bundle. File service at SMHI.
-				external_file = new File("\\\\winfs\\data\\prodkap\\sharkweb\\SHARK_CONFIG\\" + configFileName);
+				if (configFileName.compareTo("translate_codes_NEW.txt") == 0){
+					String configPath = SharkAdmConfig.getInstance().getProperty("translate_codes_NEW");
+					if (configPath == null){
+						throw new RuntimeException("The configuration file translate_codes_new.txt could not be found!");
+					}
+					external_file = new File(configPath);
+				} else{
+					external_file = new File("\\\\winfs\\data\\prodkap\\sharkweb\\SHARK_CONFIG\\" + configFileName);
+				}
+
 
 				SqliteManager.getInstance().fillTable(external_file.toPath());
 
