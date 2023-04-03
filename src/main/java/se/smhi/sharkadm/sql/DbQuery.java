@@ -79,8 +79,6 @@ public class DbQuery  {
         sqlIn.append(sqlInList.stream().collect(Collectors.joining("', '", "'", "'")).replace(",", "','").replace(" ", ""));
         sqlIn.append(")");
 
-
-
         try {
 
             int prmIdx = 1;
@@ -92,7 +90,7 @@ public class DbQuery  {
             int cnt = 0;
             while (rs.next()){
                 if (cnt > 0){
-                    codeValues.append(","); //ADDING special sign to user
+                    codeValues.append(", "); //ADDING special sign to user
                 }
                 codeValues.append(rs.getString(nameOfColumn));
                 cnt++;

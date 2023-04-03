@@ -36,6 +36,7 @@ import se.smhi.sharkadm.fileimport.misc.FileImportBvolNomp;
 import se.smhi.sharkadm.fileimport.misc.FileImportDynamicTaxa;
 import se.smhi.sharkadm.fileimport.misc.FileImportStations;
 import se.smhi.sharkadm.fileimport.misc.FileImportTrophicType;
+import se.smhi.sharkadm.sql.SqliteManager;
 import se.smhi.sharkadm.userinterface.parts.DatabaseBrowserUi;
 import se.smhi.sharkadm.userinterface.parts.ImportDatasetsUi;
 import se.smhi.sharkadm.userinterface.parts.ModelViewerManagerUi;
@@ -252,6 +253,8 @@ public class SharkAdmMainWindow {
 		shell.open();
 
 	    // ========== Load data at startup ========== 
+
+		SqliteManager.getInstance().translateHeaders();
 
 		ProgressMonitorDialog progress = new ProgressMonitorDialog(shell);
 		try {

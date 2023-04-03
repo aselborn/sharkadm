@@ -35,11 +35,9 @@ public class ParseFileUtil {
 	}
 		
 	public static BufferedReader GetSharkConfigFileCharset(String configFileName, String charset) {
-			
-//		System.out.println("DEBUG: GetSharkConfigFile: " + configFileName);
-		
+
+
 		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-//		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream inputStream;
 		BufferedReader bufferedReader = null;
 		File external_file = new File("TEST_SHARK_CONFIG\\" + configFileName);

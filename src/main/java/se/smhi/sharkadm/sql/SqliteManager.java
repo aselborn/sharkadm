@@ -29,31 +29,20 @@ public class SqliteManager {
         mConnection = ConnectionManager.getInstance().getConnection();
     }
 
-    private void createTranslateCodeTable(){
+    private List<String> createTranslateCodeTable(String tableCode){
 
-        dropTable("translate_codes_NEW");
+        //dropTable("translate_codes_NEW");
+        dropTable("tableCode");
 
-        List<String> columnList = tranlateColumnsAsList();
+        List<String> columnList = tranlateColumnsAsList(tableCode);
 
         StringBuilder bu = new StringBuilder();
-        bu.append("CREATE TABLE translate_codes_NEW (");
+        //bu.append("CREATE TABLE translate_codes_NEW (");
+        bu.append(" CREATE TABLE ".concat(tableCode).concat( "("));
         bu.append(" id INTEGER PRIMARY KEY AUTOINCREMENT,  ");
         for (String col : columnList){
             bu.append(col.concat(" TEXT ,")); // ALL fields of type of TEXT .
         }
-        /*bu.append(" field Text , ");
-        bu.append(" filter Text, ");
-        bu.append("public_value Text, " );
-        bu.append("code TEXT, " );
-        bu.append("swedish TEXT, ");
-        bu.append("english TEXT, ");
-        bu.append("synonyms TEXT, ");
-        bu.append("ices_biology TEXT, ");
-        bu.append("ices_physical_and_chemical TEXT, ");
-        bu.append("bodc_nerc TEXT, ");
-        bu.append("darwincore TEXT, ");
-        bu.append("comments TEXT, ");
-        bu.append("source TEXT)");*/
 
         bu.replace(bu.length()-1, bu.length(), ")");
 
@@ -63,14 +52,16 @@ public class SqliteManager {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+
+        return columnList;
     }
 
     /*
         Let's read translate_codes_NEW.txt to parse actual columns.
      */
-    private List<String> tranlateColumnsAsList(){
+    private List<String> tranlateColumnsAsList(String property){
         File configFile = null;
-        String pathToConfig = SharkAdmConfig.getInstance().getProperty("translate_codes_NEW");
+        String pathToConfig = SharkAdmConfig.getInstance().getProperty(property);
         List<String> columns = new ArrayList<>();
         if (pathToConfig != null){
 
@@ -80,7 +71,6 @@ public class SqliteManager {
                         .concat(configFile.toString()).concat( " is missing!!")));
             }
         }
-
         try {
 
             BufferedReader reader = new BufferedReader(new FileReader(configFile.getAbsolutePath()));
@@ -118,29 +108,25 @@ public class SqliteManager {
         The text-file is inserted to a representation in the sqlite database.
      */
     public void fillTable(Path fileName) {
+        List<String> columnList = null;
 
-        switch (fileName.getFileName().toString()){
-            case "translate_codes_NEW.txt":
-                createTranslateCodeTable();
-                insertTranslateCodes(fileName);
-                break;
+        //Some files are saved in DB for easy queries.
+        if (fileName.toString().contains("translate_codes_NEW.txt")){
 
-            default:
-                break;
+            columnList = createTranslateCodeTable(fileName.getFileName().toString().replace(".txt", ""));
+            insertTranslateCodes(fileName, columnList);
         }
+
     }
 
-    private void insertTranslateCodes(Path fileName) {
+    private void insertTranslateCodes(Path fileName, List<String> columnList) {
 
         StringBuilder bu = new StringBuilder();
-        List<String> columnList = tranlateColumnsAsList();
 
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator('\t')
                 .withIgnoreQuotations(true)
                 .build();
-
-
         try {
 
             CSVReader csvReader = new CSVReaderBuilder(new FileReader(fileName.toFile()))
@@ -150,7 +136,7 @@ public class SqliteManager {
 
             String[] entries = null;
 
-            bu.append(" INSERT INTO translate_codes_NEW ( ");
+            bu.append(" INSERT INTO ".concat(fileName.getFileName().toString().replace(".txt", "")).concat( "("));
             for (String col : columnList){
                 bu.append(col.concat(","));
             }
@@ -161,30 +147,11 @@ public class SqliteManager {
             }
             bu.replace(bu.length() -1, bu.length(), ")");
 
-            //bu.append(" INSERT INTO translate_codes_NEW (field, filter, public_value, code, swedish, english, synonyms, ices_biology, ices_physical_and_chemical, bodc_nerc, darwincore, comments, source)");
-            //bu.append(" VALUES ");
-            //bu.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
             PreparedStatement psmtm = mConnection.prepareStatement(bu.toString());
             mConnection.setAutoCommit(false);
             while ((entries = csvReader.readNext()) != null) {
 
                 ArrayList<String> list = new ArrayList<String>(Arrays.asList(entries));
-                /*
-                psmtm.setString(1, list.get(0));
-                psmtm.setString(2, list.get(1));
-                psmtm.setString(3, list.get(2));
-                psmtm.setString(4, list.get(3));
-                psmtm.setString(5, list.get(4));
-                psmtm.setString(6, list.get(5));
-                psmtm.setString(7, list.get(6));
-                psmtm.setString(8, list.get(7));
-                psmtm.setString(9, list.get(8));
-                psmtm.setString(10, list.get(9));
-                psmtm.setString(11, list.get(10));
-                psmtm.setString(12, list.get(11));
-                psmtm.setString(13, list.get(12));
-                */
                 for (int i = 0; i< columnList.size(); i++){
                     psmtm.setString(i+1,list.get(i));
                 }
@@ -219,5 +186,12 @@ public class SqliteManager {
 
     public String getTranslateCodeColumnValue(String projectCode, String Code, String nameOfColumn){
         return mDbQuery.getTranslateCodeColumnValue(projectCode, Code, nameOfColumn);
+    }
+
+    public void translateHeaders() {
+        dropTable("translate_headers");
+        String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_headers");
+        fillTable(new File(pathToFile).toPath());
+
     }
 }
