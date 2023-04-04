@@ -20,13 +20,20 @@ public class SharkAdmConfig {
     private void verifyConfigfile() {
         String pathTranslatecodesNew = getProperty("translate_codes_NEW");
         String pathTranslateHeaders = getProperty("translate_headers");
+        String pathColumnInfo = getProperty("column_info");
+        String pathTranslateAllColumns = getProperty("translate_all_columns");
+        String pathTranslateParameters = getProperty("translate_parameters");
 
-        if (pathTranslatecodesNew == null){
+        if (pathTranslatecodesNew == null)
             writeDefaultSetting("translate_codes_NEW", getDefaultSetting("translate_codes_NEW", true).concat(".txt"));
-        }
-
         if (pathTranslateHeaders == null)
             writeDefaultSetting("translate_headers", getDefaultSetting("translate_headers", true).concat(".txt"));
+        if (pathColumnInfo == null)
+            writeDefaultSetting("column_info", getDefaultSetting("column_info", true).concat(".txt"));
+        if (pathTranslateAllColumns ==null)
+            writeDefaultSetting("translate_all_columns", getDefaultSetting("translate_all_columns", true).concat(".txt"));
+        if (pathTranslateParameters ==null)
+            writeDefaultSetting("translate_parameters", getDefaultSetting("translate_parameters", true).concat(".txt"));
     }
 
     private void writeDefaultSetting(String setting, String value) {
@@ -76,6 +83,9 @@ public class SharkAdmConfig {
 
             String pathTranslateCodesNew = getDefaultSetting("translate_codes_NEW", false).concat(".txt");
             String pathTranslateHeaders= getDefaultSetting("translate_headers", false).concat(".txt");
+            String pathColumnInfo = getDefaultSetting("column_info", false).concat(".txt");
+            String pathTranslateAllColumns = getDefaultSetting("translate_all_columns", false).concat(".txt");
+            String pathTranslateParamters = getDefaultSetting("translate_parameters", false).concat(".txt");
 
             FileWriter f = new FileWriter("config.properties");
             f.write("# Default setting file, created by SharkAdm at : ".concat(date));
@@ -85,6 +95,12 @@ public class SharkAdmConfig {
             f.write("translate_codes_NEW=".concat(pathTranslateCodesNew));
             f.write("\n\r");
             f.write("translate_headers=".concat(pathTranslateHeaders));
+            f.write("\n\r");
+            f.write("translate_headers=".concat(pathColumnInfo));
+            f.write("\n\r");
+            f.write("translate_all_columns=".concat(pathTranslateAllColumns));
+            f.write("\n\r");
+            f.write("translate_parameters=".concat(pathTranslateParamters));
             f.write("\n\r");
             f.write("use_memory_database=true");
             f.write("\n\r");

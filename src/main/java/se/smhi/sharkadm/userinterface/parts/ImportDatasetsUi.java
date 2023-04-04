@@ -811,11 +811,15 @@ public class ImportDatasetsUi implements Observer {
 				}
 			}
 		};
-		importAndCreateZipButton.addListener(SWT.Selection, listener);
-		
-		
-		
+
+		/*
+			BUTTON for IMPORT TO DATABASE!
+		 */
 		// Listener for (Multi) importAndSaveToDbButton.
+
+		importAndCreateZipButton.addListener(SWT.Selection, listener);
+
+
 		listener = new Listener() {
 			public void handleEvent(Event event) {
 				

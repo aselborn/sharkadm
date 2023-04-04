@@ -111,14 +111,18 @@ public class SqliteManager {
         List<String> columnList = null;
 
         //Some files are saved in DB for easy queries.
-        if (fileName.toString().contains("translate_codes_NEW.txt")){
-
+        if (fileName.toString()
+                .contains("translate_codes_NEW.txt") || fileName.toString()
+                .contains("translate_headers") || fileName.toString()
+                .contains("column_info") || fileName.toString()
+                .contains("translate_all_columns") || fileName.toString()
+                .contains("translate_parameters"))
+        {
             columnList = createTranslateCodeTable(fileName.getFileName().toString().replace(".txt", ""));
             insertTranslateCodes(fileName, columnList);
         }
 
     }
-
     private void insertTranslateCodes(Path fileName, List<String> columnList) {
 
         StringBuilder bu = new StringBuilder();
@@ -152,12 +156,15 @@ public class SqliteManager {
             while ((entries = csvReader.readNext()) != null) {
 
                 ArrayList<String> list = new ArrayList<String>(Arrays.asList(entries));
-                for (int i = 0; i< columnList.size(); i++){
-                    psmtm.setString(i+1,list.get(i));
+
+                boolean allEmpty = list.stream().allMatch(s->s.length() == 0);
+                if (!allEmpty){
+                    for (int i = 0; i< columnList.size(); i++){
+                        psmtm.setString(i+1,list.get(i));
+                    }
+
+                    psmtm.addBatch();
                 }
-
-                psmtm.addBatch();
-
             }
 
             int[] x = psmtm.executeBatch();
@@ -184,6 +191,10 @@ public class SqliteManager {
         return mDbQuery.getTranslateCodeColumnValue(projectCode, sample, nameOfColumn);
     }
 
+    public TranslateHeaderDto getTranslateHeaderInternalKeyRowFromShortColumn(String shortColumn){
+        return mDbQuery.getTranslateHeaderInternalKeyRowFromShortColumn(shortColumn);
+    }
+
     public String getTranslateCodeColumnValue(String projectCode, String Code, String nameOfColumn){
         return mDbQuery.getTranslateCodeColumnValue(projectCode, Code, nameOfColumn);
     }
@@ -193,5 +204,42 @@ public class SqliteManager {
         String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_headers");
         fillTable(new File(pathToFile).toPath());
 
+    }
+
+    public void columnInfo() {
+        dropTable("column_info");
+        String pathToFile = SharkAdmConfig.getInstance().getProperty("column_info");
+        fillTable(new File(pathToFile).toPath());
+    }
+
+    public void translateAllColumns() {
+        dropTable("translate_all_columns");
+        String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_all_columns");
+        fillTable(new File(pathToFile).toPath());
+    }
+
+    public void translateParameters() {
+        dropTable("translate_parameters");
+        String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_parameters");
+        fillTable(new File(pathToFile).toPath());
+    }
+
+    protected List<TranslateCodesNewDto> getTranslateCodeNewDto(String code, String filter) {
+        return mDbQuery.getTranslateCodeNewDto(code, filter);
+    }
+
+    public String getTranslatedValueByCodes(String fieldValue, String fieldKey) {
+
+        List<String> uniquePublicValues = new ArrayList<>();
+
+        List<TranslateCodesNewDto> translates = getTranslateCodeNewDto(fieldValue, fieldKey);
+
+        for (TranslateCodesNewDto translate : translates){
+            if (uniquePublicValues.contains(translate.getPublic_value()))
+                continue;
+            uniquePublicValues.add(translate.getPublic_value());
+        }
+        String s =String.join(",", uniquePublicValues);
+        return String.join(",", uniquePublicValues);
     }
 }

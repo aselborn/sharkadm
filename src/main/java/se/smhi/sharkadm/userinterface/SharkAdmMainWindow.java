@@ -36,6 +36,7 @@ import se.smhi.sharkadm.fileimport.misc.FileImportBvolNomp;
 import se.smhi.sharkadm.fileimport.misc.FileImportDynamicTaxa;
 import se.smhi.sharkadm.fileimport.misc.FileImportStations;
 import se.smhi.sharkadm.fileimport.misc.FileImportTrophicType;
+import se.smhi.sharkadm.sql.LaboDto;
 import se.smhi.sharkadm.sql.SqliteManager;
 import se.smhi.sharkadm.userinterface.parts.DatabaseBrowserUi;
 import se.smhi.sharkadm.userinterface.parts.ImportDatasetsUi;
@@ -254,7 +255,18 @@ public class SharkAdmMainWindow {
 
 	    // ========== Load data at startup ========== 
 
+		/*
+			These textfiles are loaded into a representation in memory/db-disk SQLite
+		 */
 		SqliteManager.getInstance().translateHeaders();
+		SqliteManager.getInstance().columnInfo();
+		SqliteManager.getInstance().translateAllColumns();
+		SqliteManager.getInstance().translateParameters();
+
+		LaboDto.getInstance().setLaboCode("ALABO");
+		LaboDto.getInstance().setLaboCode("DELIVERER");
+		LaboDto.getInstance().setLaboCode("ORDERER");
+		LaboDto.getInstance().setLaboCode("SLABO");
 
 		ProgressMonitorDialog progress = new ProgressMonitorDialog(shell);
 		try {

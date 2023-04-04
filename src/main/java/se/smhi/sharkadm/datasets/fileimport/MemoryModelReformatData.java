@@ -24,6 +24,7 @@ import se.smhi.sharkadm.species.TrophicTypeManager;
 import se.smhi.sharkadm.species_old.TaxonManager;
 import se.smhi.sharkadm.species_old.TaxonNode;
 import se.smhi.sharkadm.sql.SqliteManager;
+import se.smhi.sharkadm.sql.TranslateCodesNewDto;
 import se.smhi.sharkadm.station.StationManager;
 import se.smhi.sharkadm.translate.TranslateCodesManager;
 import se.smhi.sharkadm.translate.TranslateCodesManager_NEW;
@@ -874,6 +875,17 @@ public class MemoryModelReformatData extends ModelVisitor {
 								"   New value: " + translatedValue);
 						}
 					} else {
+
+						/*
+							Try to fetch this value from sqlite.
+							fieldValue ->HAV, MAB, OSTKOM
+							internalKey = sample.sample_orderer_code
+							fieldKey = sample_orderer_code
+						 */
+
+						translatedValue = SqliteManager.getInstance()
+								.getTranslatedValueByCodes(fieldValue, fieldKey);
+
 						importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
 								"   Value: " + fieldValue);
 					}
@@ -1352,6 +1364,10 @@ public class MemoryModelReformatData extends ModelVisitor {
 								"   New value: " + translatedValue);
 						}
 					} else {
+
+						//Try to find via SQLite.!
+						//SqliteManager.getInstance().getTranslateCodeColumnValue(fieldKey, )
+
 						importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
 								"   Value: " + fieldValue);
 					}

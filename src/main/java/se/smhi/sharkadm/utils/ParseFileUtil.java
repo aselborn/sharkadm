@@ -69,10 +69,6 @@ public class ParseFileUtil {
 				} else{
 					external_file = new File("\\\\winfs\\data\\prodkap\\sharkweb\\SHARK_CONFIG\\" + configFileName);
 				}
-
-
-				SqliteManager.getInstance().fillTable(external_file.toPath());
-
 				if (external_file.exists()) {
 					bufferedReader = new BufferedReader(new FileReader(external_file));
 				} else {
