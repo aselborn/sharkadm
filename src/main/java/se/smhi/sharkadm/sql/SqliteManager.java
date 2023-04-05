@@ -228,18 +228,14 @@ public class SqliteManager {
         return mDbQuery.getTranslateCodeNewDto(code, filter);
     }
 
+    protected List<String> getTranslatePublicValueAsStrings(String code, String filter){
+        return mDbQuery.getTranslatePublicValueAsStrings(code, filter);
+    }
     public String getTranslatedValueByCodes(String fieldValue, String fieldKey) {
 
         List<String> uniquePublicValues = new ArrayList<>();
+        uniquePublicValues = getTranslatePublicValueAsStrings(fieldValue, fieldKey);
 
-        List<TranslateCodesNewDto> translates = getTranslateCodeNewDto(fieldValue, fieldKey);
-
-        for (TranslateCodesNewDto translate : translates){
-            if (uniquePublicValues.contains(translate.getPublic_value()))
-                continue;
-            uniquePublicValues.add(translate.getPublic_value());
-        }
-        String s =String.join(",", uniquePublicValues);
         return String.join(",", uniquePublicValues);
     }
 }

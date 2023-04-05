@@ -379,8 +379,23 @@ public class MemoryModelReformatData extends ModelVisitor {
 								"   New value: " + translatedValue);
 						}
 					} else {
-						importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
-								"   Value: " + fieldValue);
+
+						translatedValue = SqliteManager.getInstance().getTranslatedValueByCodes(fieldValue, fieldKey);
+
+						if (translatedValue.equals("")){
+
+							importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
+									"   Value: " + fieldValue.concat( " The value was checked with SYNONYMS. Still no match!."));
+
+						} else {
+							if (!fieldValue.equals(translatedValue)) {
+								visit.addField(internalKey, translatedValue);
+								visit.addField(internalKey.concat("_field_value"), fieldValue); //used for translation (original-value)
+							}
+						}
+
+						//importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
+						//		"   Value: " + fieldValue);
 					}
 				}
 			}
@@ -876,18 +891,22 @@ public class MemoryModelReformatData extends ModelVisitor {
 						}
 					} else {
 
-						/*
-							Try to fetch this value from sqlite.
-							fieldValue ->HAV, MAB, OSTKOM
-							internalKey = sample.sample_orderer_code
-							fieldKey = sample_orderer_code
-						 */
-
 						translatedValue = SqliteManager.getInstance()
 								.getTranslatedValueByCodes(fieldValue, fieldKey);
 
-						importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
-								"   Value: " + fieldValue);
+						if (translatedValue.equals("")){
+
+							importInfo.addConcatWarning("Code not found. Field: " + fieldKey +
+									"   Value: " + fieldValue.concat( " The value was checked with SYNONYMS. Still no match!."));
+
+						} else {
+							if (!fieldValue.equals(translatedValue)) {
+								sample.addField(internalKey, translatedValue);
+								sample.addField(internalKey.concat("_field_value"), fieldValue); //used for translation (original-value)
+							}
+						}
+
+
 					}
 				}
 			}
@@ -910,7 +929,9 @@ public class MemoryModelReformatData extends ModelVisitor {
 				sample.addField("sample.sample_project_name_sv", object.getSwedish());
 				sample.addField("sample.sample_project_name_en", object.getEnglish());
 			} else {
+
 				String projectPublicValue = SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "public_value"); //public_value is the data-column name in translate_codes_NEW
+
 				String projectNameEn =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "english");
 				String projectNameSv =  SqliteManager.getInstance().getTranslateCodeColumnValue("sample_project_code", sample, "swedish");
 
@@ -940,10 +961,12 @@ public class MemoryModelReformatData extends ModelVisitor {
 			}
 			if (object == null){
 
+				ordererCode = sample.getField("sample.sample_orderer_code_field_value");
+
 				String sv = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "swedish");
 				String en = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "english");
-				sample.addField("sample.sample_orderer_name_sv", sv.length() > 0 ? sv : ordererCode );
-				sample.addField("sample.sample_orderer_name_en", en.length() > 0 ? en : ordererCode);
+				sample.addField("sample.sample_orderer_name_sv", sv == null ? ordererCode : "");
+				sample.addField("sample.sample_orderer_name_en", en == null ? ordererCode : "");
 			}
 		}
 

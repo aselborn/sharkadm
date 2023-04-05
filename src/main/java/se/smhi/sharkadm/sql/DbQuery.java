@@ -5,10 +5,6 @@ import se.smhi.sharkadm.model.Sample;
 
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DbQuery  {
@@ -67,9 +63,12 @@ public class DbQuery  {
     }
 
     public String getTranslateCodeColumnValue(String projectCode, String code, String nameOfColumn) {
-        StringBuilder codeValues = new StringBuilder();
+        String  codeValues = "";
         StringBuilder bu = new StringBuilder();
         StringBuilder sqlIn = new StringBuilder();
+        Map<String, String> codeMap = new HashMap<>();
+
+        List<String> resultList = new ArrayList<>();
 
         bu.append(" SELECT * FROM translate_codes_NEW WHERE field = ? AND code in (?)");
         ArrayList<String> sqlInList = new ArrayList<String>(Arrays.asList(code));
@@ -88,11 +87,12 @@ public class DbQuery  {
             ResultSet rs = pstmt.executeQuery();
             int cnt = 0;
             while (rs.next()){
-                if (cnt > 0){
-                    codeValues.append(", "); //ADDING special sign to user
-                }
-                codeValues.append(rs.getString(nameOfColumn));
-                cnt++;
+
+                if (resultList.contains(rs.getString(nameOfColumn)))
+                    continue;
+
+                resultList.add(rs.getString(nameOfColumn));
+                codeMap.put(rs.getString("code"), nameOfColumn);
 
             }
 
@@ -100,7 +100,22 @@ public class DbQuery  {
             throw new RuntimeException(e);
         }
 
-        return codeValues.length() > 0 ? codeValues.toString() : null;
+        if (resultList.size() != code.split(",").length){
+            for(String co : sqlInList){
+                //String[] codes = co.replace(" ", "").trim().split(",");
+                String[] codes = co.trim().split(",");
+                for(String missingCode : codes){
+                    if (!codeMap.containsKey(missingCode)){
+                        String additionalCode = getTranslatePublicValueFromColumns(missingCode, projectCode);
+                        if (additionalCode != "")
+                            resultList.add(additionalCode);
+                    }
+                }
+            }
+        }
+        codeValues =String.join(",", resultList);
+        return codeValues.length() == 0 ?  null : codeValues ;
+
     }
 
     public TranslateHeaderDto getTranslateHeaderInternalKeyRowFromShortColumn(String shortColumn) {
@@ -136,50 +151,6 @@ public class DbQuery  {
     /*
         This function should return the number of codes from public_value as provided in the code
      */
-
-    public List<String> getPublicValueForMulipleCodes(String code, String filter) {
-
-        List<String> publicCodes = new ArrayList<>();
-
-        int sizeOfDubleCodes = code.split(",").length;
-
-        StringBuilder bu = new StringBuilder();
-        StringBuilder sqlIn = new StringBuilder();
-
-        bu.append(" SELECT * from translate_codes_NEW ");
-        bu.append( " WHERE code IN ");
-
-        ArrayList<String> sqlInList = new ArrayList<String>(Arrays.asList(code));
-
-        sqlIn.append("(");
-        sqlIn.append(sqlInList.stream().collect(Collectors.joining("', '", "'", "'")).replace(",", "','").replace(" ", ""));
-        sqlIn.append(")");
-
-        bu.append(sqlIn);
-
-        try {
-
-            PreparedStatement pstmt = mConnection.prepareStatement(bu.toString());
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()){
-                if (publicCodes.contains(rs.getString("public_value")))
-                    continue;
-                publicCodes.add(rs.getString("public_value"));
-            }
-
-            //if not match! start search!
-            if (publicCodes.size() != sizeOfDubleCodes){
-
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return publicCodes;
-    }
-
 
     public List<TranslateCodesNewDto> getTranslateCodeNewDto(String code, String filter) {
 
@@ -240,4 +211,106 @@ public class DbQuery  {
         return translateObjectList;
     }
 
+    private String getTranslatePublicValueFromColumns(String code, String field){
+
+        String publicValue = "";
+        List<String> results = new ArrayList<>();
+
+        StringBuilder bu = new StringBuilder();
+        bu.append( "SELECT public_value FROM translate_codes_NEW " );
+        bu.append( " WHERE code = ?");
+        bu.append( " OR swedish = ?");
+        bu.append( " OR english = ?");
+        bu.append( " OR ices_biology = ?");
+        bu.append( " OR ices_physical_and_chemical = ?");
+        bu.append( " OR bodc_nerc = ?");
+        bu.append( " OR darwincore = ?");
+        bu.append( " OR synonyms LIKE ?");
+
+        try {
+            PreparedStatement pstmt = mConnection.prepareStatement(bu.toString());
+            pstmt.setString(1, code);
+            pstmt.setString(2, code);
+            pstmt.setString(3, code);
+            pstmt.setString(4, code);
+            pstmt.setString(5, code);
+            pstmt.setString(6, code);
+            pstmt.setString(7, code);
+            pstmt.setString(8, code);
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()){
+                if (results.contains(rs.getString("public_value")))
+                    continue;
+                results.add(rs.getString("public_value"));
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (results.size() > 0){
+            publicValue = results.get(0);
+        }
+
+        return publicValue;
+
+    }
+
+
+    public List<String> getTranslatePublicValueAsStrings(String code, String filter) {
+
+        List<String> publicCodes = new ArrayList<>();
+        Map<String, String> codeMap = new HashMap<>();
+
+        int sizeOfDoubleCodes = code.split(",").length;
+
+        StringBuilder bu = new StringBuilder();
+        StringBuilder sqlIn = new StringBuilder();
+
+        bu.append(" SELECT * from translate_codes_NEW ");
+        bu.append( " WHERE code IN ");
+
+        ArrayList<String> sqlInList = new ArrayList<String>(Arrays.asList(code));
+
+        sqlIn.append("(");
+        sqlIn.append(sqlInList.stream().collect(Collectors.joining("', '", "'", "'")).replace(",", "','").replace(" ", ""));
+        sqlIn.append(")");
+
+        bu.append(sqlIn);
+
+        try {
+
+            PreparedStatement pstmt = mConnection.prepareStatement(bu.toString());
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()){
+                if (publicCodes.contains(rs.getString("public_value")))
+                    continue;
+                publicCodes.add(rs.getString("public_value"));
+                codeMap.put(rs.getString("code").trim(), rs.getString("public_value").trim());
+            }
+
+            //if not match! start search!
+            if (publicCodes.size() != sizeOfDoubleCodes){
+                for(String co : sqlInList){
+                    //String[] codes = co.replace(" ", "").trim().split(",");
+                    String[] codes = co.trim().split(",");
+                    for(String missingCode : codes){
+                        if (!codeMap.containsKey(missingCode)){
+                            String additionalCode = getTranslatePublicValueFromColumns(missingCode.replaceFirst(" ", ""), filter);
+                            if (additionalCode != "")
+                                publicCodes.add(additionalCode);
+                        }
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return publicCodes;
+    }
 }
