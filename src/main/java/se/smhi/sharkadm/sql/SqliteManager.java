@@ -27,6 +27,7 @@ public class SqliteManager {
     private SqliteManager(){
         mDbQuery = new DbQuery();
         mConnection = ConnectionManager.getInstance().getConnection();
+
     }
 
     private List<String> createTranslateCodeTable(String tableCode){
@@ -37,7 +38,6 @@ public class SqliteManager {
         List<String> columnList = tranlateColumnsAsList(tableCode);
 
         StringBuilder bu = new StringBuilder();
-        //bu.append("CREATE TABLE translate_codes_NEW (");
         bu.append(" CREATE TABLE ".concat(tableCode).concat( "("));
         bu.append(" id INTEGER PRIMARY KEY AUTOINCREMENT,  ");
         for (String col : columnList){
@@ -112,7 +112,7 @@ public class SqliteManager {
 
         //Some files are saved in DB for easy queries.
         if (fileName.toString()
-                .contains("translate_codes_NEW.txt") || fileName.toString()
+                .contains("translate_codes_NEW") || fileName.toString()
                 .contains("translate_headers") || fileName.toString()
                 .contains("column_info") || fileName.toString()
                 .contains("translate_all_columns") || fileName.toString()
@@ -218,6 +218,12 @@ public class SqliteManager {
         fillTable(new File(pathToFile).toPath());
     }
 
+    public void translateCodesNew() {
+        dropTable("translate_codes_NEW");
+        String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_codes_NEW");
+        fillTable(new File(pathToFile).toPath());
+    }
+
     public void translateParameters() {
         dropTable("translate_parameters");
         String pathToFile = SharkAdmConfig.getInstance().getProperty("translate_parameters");
@@ -238,4 +244,6 @@ public class SqliteManager {
 
         return String.join(",", uniquePublicValues);
     }
+
+
 }
