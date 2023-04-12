@@ -83,7 +83,12 @@ public abstract class ModelElement {
 
 	public void addField(String key, String value) {
 		if (!value.equals("")) {
-		fieldMap.put(key, value);
+
+			if (value.split(",").length == 4){
+				String s = "";
+			}
+
+			fieldMap.put(key, value);
 		} else {
 			if (fieldMap.containsKey(key)) {
 				fieldMap.remove(key);

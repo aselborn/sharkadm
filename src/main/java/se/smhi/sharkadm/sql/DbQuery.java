@@ -88,11 +88,13 @@ public class DbQuery  {
             int cnt = 0;
             while (rs.next()){
 
-                if (resultList.contains(rs.getString(nameOfColumn)))
+                String listItem = rs.getString(nameOfColumn).trim();
+
+                if (resultList.contains(listItem))
                     continue;
 
-                resultList.add(rs.getString(nameOfColumn));
-                codeMap.put(rs.getString("code"), nameOfColumn);
+                resultList.add(listItem);
+                codeMap.put(rs.getString("code").trim(), nameOfColumn);
 
             }
 
@@ -102,18 +104,26 @@ public class DbQuery  {
 
         if (resultList.size() != code.split(",").length){
             for(String co : sqlInList){
-                //String[] codes = co.replace(" ", "").trim().split(",");
                 String[] codes = co.trim().split(",");
                 for(String missingCode : codes){
+
+                    if (missingCode.startsWith(" "))
+                        missingCode = missingCode.substring(1);
+
+                    if (missingCode.endsWith(" "))
+                        missingCode = missingCode.substring(0, missingCode.length() -1);
+
                     if (!codeMap.containsKey(missingCode)){
+
                         String additionalCode = getTranslatePublicValueFromColumns(missingCode, projectCode);
+
                         if (additionalCode != "")
                             resultList.add(additionalCode);
                     }
                 }
             }
         }
-        codeValues =String.join(",", resultList);
+        codeValues =String.join(", ", resultList);
         return codeValues.length() == 0 ?  null : codeValues ;
 
     }
@@ -240,9 +250,10 @@ public class DbQuery  {
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()){
-                if (results.contains(rs.getString("public_value")))
+                String publicValueString = rs.getString("public_value").trim();
+                if (results.contains(publicValueString))
                     continue;
-                results.add(rs.getString("public_value"));
+                results.add(publicValueString);
             }
 
 
@@ -286,22 +297,40 @@ public class DbQuery  {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()){
-                if (publicCodes.contains(rs.getString("public_value")))
+                String publicValueString = rs.getString("public_value").trim();
+                if (publicValueString.startsWith(" ") && publicValueString.length()>1){
+                    publicValueString = publicValueString.substring(1);
+                }
+
+                if (publicCodes.contains(publicValueString))
                     continue;
-                publicCodes.add(rs.getString("public_value"));
-                codeMap.put(rs.getString("code").trim(), rs.getString("public_value").trim());
+
+
+                publicCodes.add(publicValueString);
+                codeMap.put(rs.getString("code").trim(), publicValueString);
             }
 
             //if not match! start search!
             if (publicCodes.size() != sizeOfDoubleCodes){
                 for(String co : sqlInList){
-                    //String[] codes = co.replace(" ", "").trim().split(",");
                     String[] codes = co.trim().split(",");
                     for(String missingCode : codes){
                         if (!codeMap.containsKey(missingCode)){
+
                             String additionalCode = getTranslatePublicValueFromColumns(missingCode.replaceFirst(" ", ""), filter);
-                            if (additionalCode != "")
-                                publicCodes.add(additionalCode);
+
+                            if (additionalCode.compareTo("") == 0){
+                                if (missingCode.startsWith(" ") && missingCode.length()>1)
+                                    missingCode = missingCode.substring(1);
+
+                                publicCodes.add(missingCode); //We did not find the translation value, put the original value here!
+
+                            } else{
+                                if (!publicCodes.contains(additionalCode))
+                                    publicCodes.add(additionalCode);
+                            }
+
+
                         }
                     }
                 }

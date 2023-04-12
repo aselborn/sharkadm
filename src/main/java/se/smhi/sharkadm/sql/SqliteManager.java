@@ -242,7 +242,7 @@ public class SqliteManager {
         List<String> uniquePublicValues = new ArrayList<>();
         uniquePublicValues = getTranslatePublicValueAsStrings(fieldValue, fieldKey);
 
-        return String.join(",", uniquePublicValues);
+        return String.join(", ", uniquePublicValues);
     }
 
 

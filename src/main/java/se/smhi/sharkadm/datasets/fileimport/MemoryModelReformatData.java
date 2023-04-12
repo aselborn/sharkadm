@@ -390,7 +390,7 @@ public class MemoryModelReformatData extends ModelVisitor {
 						} else {
 							if (!fieldValue.equals(translatedValue)) {
 								visit.addField(internalKey, translatedValue);
-								visit.addField(internalKey.concat("_field_value"), fieldValue); //used for translation (original-value)
+								visit.addField(internalKey.concat("_reported_value"), fieldValue); //used for translation (original-value)
 							}
 						}
 
@@ -902,7 +902,7 @@ public class MemoryModelReformatData extends ModelVisitor {
 						} else {
 							if (!fieldValue.equals(translatedValue)) {
 								sample.addField(internalKey, translatedValue);
-								sample.addField(internalKey.concat("_field_value"), fieldValue); //used for translation (original-value)
+								sample.addField(internalKey.concat("_reported_value"), fieldValue); //used for translation (original-value)
 							}
 						}
 
@@ -961,7 +961,7 @@ public class MemoryModelReformatData extends ModelVisitor {
 			}
 			if (object == null){
 
-				ordererCode = sample.getField("sample.sample_orderer_code_field_value");
+				ordererCode = sample.getField("sample.sample_orderer_code_reported_value");
 
 				String sv = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "swedish");
 				String en = SqliteManager.getInstance().getTranslateCodeColumnValue("laboratory", ordererCode, "english");

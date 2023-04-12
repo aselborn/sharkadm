@@ -377,7 +377,8 @@ public abstract class FormatFileBase extends FormatBase {
 				if (key.compareTo("variable.species_flag_code") == 0){
 
 					String publicCodeValue = SqliteManager.getInstance().getTranslateCodeColumnValue("species_flag_code", columnValue, "public_value"); //public_value is the data-column name in translate_codes_NEW
-					if (publicCodeValue.length()>0)
+
+					if (publicCodeValue != null &&  publicCodeValue.length()>0)
 						columnValue = publicCodeValue;
 				}
 
