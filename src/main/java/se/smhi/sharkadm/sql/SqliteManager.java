@@ -245,5 +245,4 @@ public class SqliteManager {
         return String.join(", ", uniquePublicValues);
     }
 
-
 }

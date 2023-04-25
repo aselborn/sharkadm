@@ -246,7 +246,7 @@ public class DbQuery  {
             pstmt.setString(5, code);
             pstmt.setString(6, code);
             pstmt.setString(7, code);
-            pstmt.setString(8, code);
+            pstmt.setString(8, "%" +  code + "%");
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()){

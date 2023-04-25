@@ -70,7 +70,7 @@ public class SharkAdmMainWindow {
 		Display display = new Display();
 		final Shell shell = new Shell(display);
 		shell.setText("SHARKadm - Administration of marine environmental monitoring data ");
-		SharkAdmMainStatusBar.setField1("SharkAdm Version 2.8");
+		SharkAdmMainStatusBar.setField1("SharkAdm Version 2.9");
 		// ========== Window position ==========
 		
 		// Position window at startup. Use default position if at least one corner is outside
