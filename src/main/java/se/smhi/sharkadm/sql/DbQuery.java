@@ -1,6 +1,7 @@
 package se.smhi.sharkadm.sql;
 
 
+import org.eclipse.emf.ecore.EParameter;
 import se.smhi.sharkadm.model.Sample;
 
 import java.sql.*;
@@ -236,6 +237,7 @@ public class DbQuery  {
         bu.append( " OR bodc_nerc = ?");
         bu.append( " OR darwincore = ?");
         bu.append( " OR synonyms LIKE ?");
+        bu.append( " AND field = ? ");
 
         try {
             PreparedStatement pstmt = mConnection.prepareStatement(bu.toString());
@@ -247,6 +249,7 @@ public class DbQuery  {
             pstmt.setString(6, code);
             pstmt.setString(7, code);
             pstmt.setString(8, "%" +  code + "%");
+            pstmt.setString(9, field);
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()){
